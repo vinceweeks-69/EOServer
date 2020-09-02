@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Android.Runtime;
 using EO.ViewModels.ControllerModels;
 
-namespace EO.ViewModels.ControllerModels
+namespace ViewModels.ControllerModels
 {
     /// <summary>
     /// Response to login with username and password

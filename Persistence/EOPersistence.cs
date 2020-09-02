@@ -21,6 +21,7 @@ namespace EO.Persistence
 
         public EOPersistence()
         {
+            //connectionString="server=127.0.0.1;port=3306;user=EOSystem;password=Orchids@5185;database=eotest"
             var optionsBuilder = new DbContextOptionsBuilder<eotestContext>();
             optionsBuilder.UseMySQL("server=localhost;port=3306;user=root;password=jVW@696969;database=eotest");
             dbContext = new eotestContext(optionsBuilder.Options);
@@ -264,6 +265,47 @@ namespace EO.Persistence
             return containers;
         }
 
+        public CustomerContainerResponse GetCustomerContainers(CustomerContainerRequest request)
+        {
+            CustomerContainerResponse response = new CustomerContainerResponse();
+
+            dbContext.CustomerContainer.Where(a => a.CustomerId == request.CustomerContainer.CustomerId).ToList().ForEach(item =>
+            {
+                response.CustomerContainers.Add(new CustomerContainerDTO()
+                {
+                    CustomerContainerId = item.CustomerContainerId,
+                    CustomerId = item.CustomerId,
+                    ImageId = item.ImageId,
+                    Label = item.Label
+                });
+            });
+
+            return response;
+        }
+
+        public ApiResponse AddUpdateCustomerContainer(CustomerContainerRequest request)
+        {
+            ApiResponse response = new ApiResponse();
+
+            try
+            {
+                CustomerContainer cc = new CustomerContainer();
+                cc.CustomerId = request.CustomerContainer.CustomerId;
+                cc.Label = request.CustomerContainer.Label;
+                cc.ImageId = request.CustomerContainer.ImageId;
+
+                dbContext.CustomerContainer.Add(cc);
+                dbContext.SaveChanges();
+                response.Id = cc.CustomerContainerId;
+            }
+            catch (Exception ex)
+            {
+                int debug = 0;
+            }
+
+            return response;
+        }
+
         public List<ServiceCodeDTO> GetServiceCodes()
         {
             List<ServiceCodeDTO> serviceCodes = new List<ServiceCodeDTO>();
@@ -418,15 +460,18 @@ namespace EO.Persistence
             return notUnique;
         }
 
-        public bool ArrangementNameIsnotUnique(string arrangementName)
+        public bool ArrangementNameIsnotUnique(ArrangementDTO arrangement)
         {
             bool notUnique = false;
 
-            Arrangement ar = dbContext.Arrangement.Where(a => a.ArrangementName == arrangementName).FirstOrDefault();
+            Arrangement ar = dbContext.Arrangement.Where(a => a.ArrangementName == arrangement.ArrangementName).FirstOrDefault();
 
             if (ar != null && ar.ArrangementId > 0)
             {
-                notUnique = true;
+                if (arrangement.ArrangementId != 0 && arrangement.ArrangementId != ar.ArrangementId)  //don't check self
+                {
+                    notUnique = true;
+                }
             }
 
             return notUnique;
@@ -1031,6 +1076,11 @@ namespace EO.Persistence
                     Arrangement arrangement = dbContext.Arrangement.Where(a => a.ArrangementId == arrangementRequest.Arrangement.ArrangementId).FirstOrDefault();
 
                     arrangement.ArrangementName = arrangementRequest.Arrangement.ArrangementName;
+                    arrangement.DesignerName = arrangementRequest.Arrangement.DesignerName;
+                    arrangement._180or360 = arrangementRequest.Arrangement._180or360;
+                    arrangement.Container = arrangementRequest.Arrangement.Container;
+                    arrangement.CustomerContainerId = arrangementRequest.Arrangement.CustomerContainerId;
+                    arrangement.LocationName = arrangementRequest.Arrangement.LocationName;
 
                     List<ArrangementInventoryInventoryMap> inventoryMapOriginal =
                         dbContext.ArrangementInventoryInventoryMap.Where(a => a.ArrangementId == arrangementRequest.Arrangement.ArrangementId).ToList();
@@ -1118,6 +1168,7 @@ namespace EO.Persistence
                     newSvcCode.Taxable = true;
                     newSvcCode.Price = svcCodes.Sum(b => b.Price);
                     newSvcCode.Cost = svcCodes.Sum(b => b.Cost);
+                    //check for duplication - or create service code name generator
                     newSvcCode.ServiceCode1 = arrangementRequest.Arrangement.ArrangementName;
 
                     dbContext.ServiceCode.Add(newSvcCode);
@@ -1126,6 +1177,11 @@ namespace EO.Persistence
                     Arrangement a = new Arrangement()
                     {
                         ArrangementName = arrangementRequest.Arrangement.ArrangementName,
+                        DesignerName = arrangementRequest.Arrangement.DesignerName,
+                        _180or360 = arrangementRequest.Arrangement._180or360,
+                        Container = arrangementRequest.Arrangement.Container,
+                        CustomerContainerId = arrangementRequest.Arrangement.CustomerContainerId,
+                        LocationName= arrangementRequest.Arrangement.LocationName,
                         ServiceCodeId = newSvcCode.ServiceCodeId
                     };
 
@@ -1911,6 +1967,11 @@ namespace EO.Persistence
                     {
                         ArrangementId = item.ArrangementId,
                         ArrangementName = item.ArrangementName,
+                        DesignerName = item.DesignerName,
+                        _180or360 = item._180or360,
+                        Container = item.Container,
+                        CustomerContainerId = item.CustomerContainerId,
+                        LocationName = item.LocationName,
                         ServiceCodeId = item.ServiceCodeId,
                         UpdateDate = item.UpdateDate
                     }
@@ -1961,6 +2022,11 @@ namespace EO.Persistence
             {
                 ArrangementId = a.ArrangementId,
                 ArrangementName = a.ArrangementName,
+                DesignerName = a.DesignerName,
+                _180or360 = a._180or360,
+                Container = a.Container,
+                CustomerContainerId = a.CustomerContainerId,
+                LocationName = a.LocationName,
                 ServiceCodeId = serviceCodeList.Where(b => b.ServiceCodeId == a.ServiceCodeId).Select(c => c.ServiceCodeId).First()
             };
 
@@ -2021,6 +2087,35 @@ namespace EO.Persistence
             }
 
             return size;
+        }
+
+        public ApiResponse AddImage(AddImageRequest request)
+        {
+            ApiResponse response = new ApiResponse();
+
+            using (var scope = new TransactionScope(TransactionScopeOption.Required))
+            {
+                try
+                {
+                    Image image = new Image()
+                    {
+                        ImageData = request.imgBytes
+                    };
+
+                    dbContext.Image.Add(image);
+                    dbContext.SaveChanges();
+                    scope.Complete();
+                    response.Id = image.ImageId;
+                }
+                catch (Exception ex)
+                {
+                    Dictionary<string, List<string>> msgs = new Dictionary<string, List<string>>();
+                    msgs.Add("Error - AddImage", new List<string>() { ex.Message });
+                    response.Messages = msgs;
+                }
+            }
+
+            return response;
         }
 
         public long AddPlantImage(byte[] imageBytes)

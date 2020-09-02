@@ -32,7 +32,7 @@ namespace EO.Persistence
 
         bool ContainerNameIsnotUnique(string containerName);
 
-        bool ArrangementNameIsnotUnique(string arrangementName);
+        bool ArrangementNameIsnotUnique(ArrangementDTO arrangement);
 
         GetPlantResponse GetPlant(long plantId);
 
@@ -82,6 +82,10 @@ namespace EO.Persistence
 
         GetKvpLongStringResponse GetInventoryList();
 
+        CustomerContainerResponse GetCustomerContainers(CustomerContainerRequest request);
+
+        ApiResponse AddUpdateCustomerContainer(CustomerContainerRequest request);
+
         long ServiceCodeExists(ServiceCodeDTO serviceCodeDTO);
 
         long AddServiceCode(ServiceCodeDTO serviceCodeDTO);
@@ -127,6 +131,8 @@ namespace EO.Persistence
         WorkOrderResponse GetWorkOrder(long workOrderId);
 
         List<WorkOrderResponse> GetWorkOrders(WorkOrderListFilter filter);
+
+        ApiResponse AddImage(AddImageRequest request); 
 
         long AddPlantImage(byte[] imageBytes);
 

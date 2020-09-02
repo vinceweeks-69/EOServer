@@ -60,6 +60,7 @@
     <Compile Include="ControllerModels\AddVendorRequest.cs" />
     <Compile Include="ControllerModels\AddWorkOrderRequest.cs" />
     <Compile Include="ControllerModels\ApiResponse.cs" />
+    <Compile Include="ControllerModels\CustomerContainerRequest.cs" />
     <Compile Include="ControllerModels\ErrorLogRequest.cs" />
     <Compile Include="ControllerModels\GetContainerTypeResponse.cs" />
     <Compile Include="ControllerModels\GetCustomerResponse.cs" />
@@ -94,6 +95,7 @@
     <Compile Include="DataModels\ContainerDTO.cs" />
     <Compile Include="DataModels\ContainerInventoryDTO.cs" />
     <Compile Include="DataModels\ContainerNameDTO.cs" />
+    <Compile Include="DataModels\CustomerContainerDTO.cs" />
     <Compile Include="DataModels\EOImgData.cs" />
     <Compile Include="DataModels\EOMailMessage.cs" />
     <Compile Include="DataModels\ErrorLogDTO.cs" />

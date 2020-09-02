@@ -29,6 +29,7 @@ namespace EO.DatabaseContext
         public virtual DbSet<ArrangementInventoryInventoryMap> ArrangementInventoryInventoryMap { get; set; }
         public virtual DbSet<Communities> Communities { get; set; }
         public virtual DbSet<Container> Container { get; set; }
+        public virtual DbSet<CustomerContainer> CustomerContainer { get; set; }
         public virtual DbSet<ContainerImageMap> ContainerImageMap { get; set; }
         //public virtual DbSet<ContainerUploads> ContainerUploads { get; set; }
         //public virtual DbSet<GlCodes> GlCodes { get; set; }
@@ -203,6 +204,30 @@ namespace EO.DatabaseContext
                     .HasColumnName("arrangement_name")
                     .HasMaxLength(255)
                     .IsUnicode(false);
+
+                entity.Property(e => e.DesignerName)
+                   .IsRequired()
+                   .HasColumnName("designer_name")
+                   .HasMaxLength(45)
+                   .IsUnicode(false);
+
+                entity.Property(e => e._180or360)
+                   .HasColumnName("_180_or_360")
+                   .HasColumnType("int(11) unsigned");
+
+                entity.Property(e => e.Container)
+                   .HasColumnName("container")
+                   .HasColumnType("int(11) unsigned");
+
+                entity.Property(e => e.CustomerContainerId)
+                   .HasColumnName("customer_container_id")
+                   .HasColumnType("bigint(20) unsigned");
+
+                entity.Property(e => e.LocationName)
+                  .IsRequired()
+                  .HasColumnName("location_name")
+                  .HasMaxLength(255)
+                  .IsUnicode(false);
 
                 entity.Property(e => e.ServiceCodeId)
                     .HasColumnName("service_code_id")
@@ -438,6 +463,28 @@ namespace EO.DatabaseContext
                     .HasForeignKey(d => d.ImageId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_image_contanier");
+            });
+
+            modelBuilder.Entity<CustomerContainer>(entity =>
+            {
+                entity.ToTable("customer_container", "eotest");
+
+                entity.Property(e => e.CustomerContainerId)
+                    .HasColumnName("customer_container_id")
+                    .HasColumnType("bigint(20) unsigned");
+
+                entity.Property(e => e.CustomerId)
+                    .HasColumnName("customer_id")
+                    .HasColumnType("bigint(20) unsigned");
+
+                entity.Property(e => e.Label)
+                    .HasColumnName("label")
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ImageId)
+                    .HasColumnName("image_id")
+                    .HasColumnType("bigint(20) unsigned");
             });
 
             //modelBuilder.Entity<ContainerUploads>(entity =>

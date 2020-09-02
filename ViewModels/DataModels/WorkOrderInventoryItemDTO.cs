@@ -17,7 +17,7 @@ namespace ViewModels.DataModels
 
         }
 
-        public WorkOrderInventoryItemDTO(long workOrderId, long inventoryId, string inventoryName, string size, long imageId, int quantity = 1)
+        public WorkOrderInventoryItemDTO(long workOrderId, long inventoryId, string inventoryName, string size, long imageId, long groupID = 0, int quantity = 1)
         {
             WorkOrderId = workOrderId;
             InventoryId = inventoryId;
@@ -25,6 +25,16 @@ namespace ViewModels.DataModels
             ImageId = imageId;
             Size = size;
             Quantity = quantity;
+            GroupId = groupID;
+        }
+
+        public WorkOrderInventoryItemDTO(ArrangementInventoryDTO dto)
+        {
+            InventoryId = dto.InventoryId;
+            InventoryName = dto.ArrangementInventoryName;
+            Quantity = dto.Quantity;
+            ImageId = dto.ImageId;
+            Size = dto.Size;
         }
 
         public long WorkOrderId { get; set; }
@@ -38,6 +48,9 @@ namespace ViewModels.DataModels
         public long ImageId { get; set; }
 
         public string Size { get; set; }
+
+        public long GroupId { get; set; }
+
         protected void OnPropertyChanged(string name)
         {
             PropertyChangedEventHandler handler = PropertyChanged;

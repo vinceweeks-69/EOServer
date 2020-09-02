@@ -225,6 +225,12 @@ namespace EO.Login_Controller
         }
 
         [HttpPost]
+        public ApiResponse AddImage(AddImageRequest request)
+        {
+            return inventoryManager.AddImage(request);
+        }
+
+        [HttpPost]
         public ApiResponse AddPlantImage(AddImageRequest request)
         {
             ApiResponse response = new ApiResponse();
@@ -501,6 +507,18 @@ namespace EO.Login_Controller
             return inventoryManager.GetContainersByType(containerTypeId);
         }
 
+        [HttpPost]
+        public CustomerContainerResponse GetCustomerContainers(CustomerContainerRequest request)
+        {
+            return inventoryManager.GetCustomerContainers(request);
+        }
+
+        [HttpPost]
+        public ApiResponse AddUpdateCustomerContainer(CustomerContainerRequest request)
+        {
+            return inventoryManager.AddUpdateCustomerContainer(request);
+        }
+
         /// <summary>
         /// Plant Types 
         /// Brassidium=15
@@ -643,6 +661,19 @@ namespace EO.Login_Controller
             return response;
         }
 
+        [HttpPost]
+        public ApiResponse ArrangementNameIsNotUnique(ArrangementDTO arrangement)
+        {
+            ApiResponse response = new ApiResponse();
+
+            if (inventoryManager.ArrangementNameIsnotUnique(arrangement))
+            {
+                response.AddMessage("ArrangementName", new List<string>() { "This arrangement name is in use. Please choose another." });
+            }
+
+            return response;
+        }
+
         /// <summary>
         /// Add a new arrangement to inventory
         /// </summary>
@@ -657,7 +688,7 @@ namespace EO.Login_Controller
             {
                 response.AddMessage("InventoryName", new List<string>() { "This inventory name is in use. Please choose another." });
             }
-            else if (inventoryManager.ArrangementNameIsnotUnique(request.Arrangement.ArrangementName))
+            else if (inventoryManager.ArrangementNameIsnotUnique(request.Arrangement))
             {
                 response.AddMessage("ArrangementName", new List<string>() { "This arrangement name is in use. Please choose another." });
             }

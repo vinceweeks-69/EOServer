@@ -157,6 +157,7 @@
     <Compile Include="DbContext\ContainerName.cs" />
     <Compile Include="DbContext\ContainerType.cs" />
     <Compile Include="DbContext\ContainerUploads.cs" />
+    <Compile Include="DbContext\CustomerContainer.cs" />
     <Compile Include="DbContext\eotestContext.cs" />
     <Compile Include="DbContext\ErrorLog.cs" />
     <Compile Include="DbContext\Foliage.cs" />

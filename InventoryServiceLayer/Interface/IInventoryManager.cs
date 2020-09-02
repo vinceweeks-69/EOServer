@@ -56,6 +56,10 @@ namespace InventoryServiceLayer.Interface
 
         GetContainerResponse GetContainers();
 
+        CustomerContainerResponse GetCustomerContainers(CustomerContainerRequest request);
+
+        ApiResponse AddUpdateCustomerContainer(CustomerContainerRequest request);
+
         List<ServiceCodeDTO> GetAllServiceCodes();
 
         GetKvpLongStringResponse GetInventoryList();
@@ -82,7 +86,7 @@ namespace InventoryServiceLayer.Interface
 
         bool ContainerNameIsNotUnique(string containerName);
 
-        bool ArrangementNameIsnotUnique(string arrangementname);
+        bool ArrangementNameIsnotUnique(ArrangementDTO arrangement);
 
         long AddPlantName(AddPlantNameRequest request);
 
@@ -105,6 +109,8 @@ namespace InventoryServiceLayer.Interface
         long AddArrangement(AddArrangementRequest arrangementRequest);
 
         long UpdateArrangement(UpdateArrangementRequest arrangementRequest);
+
+        ApiResponse AddImage(AddImageRequest request);
 
         long AddPlantImage(byte[] imageBytes);
 

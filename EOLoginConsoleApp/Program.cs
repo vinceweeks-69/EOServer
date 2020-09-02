@@ -38,7 +38,9 @@ namespace EOLoginConsoleApp
             //options.Urls.Add("http://192.168.0.1");
             //options.Urls.Add("http://192.168.1.1");
 
-            options.Urls.Add("http://10.0.0.5:9000");
+            options.Urls.Add("http://10.0.0.5:9000"); //Me royalwood
+
+            //options.Urls.Add("http://10.1.10.148:9000");  //Me EO
 
             //options.Urls.Add("http://99.125.200.187:9000");    //Me FL
 
@@ -52,7 +54,7 @@ namespace EOLoginConsoleApp
 
             //options.Urls.Add("http://192.168.1.1:9000");
             //options.Urls.Add("http://192.168.1.2:9000");
-            //options.Urls.Add("http://192.168.1.3:9000");
+            //options.Urls.Add("http://192.168.1.134:9000");
 
 
             // Start OWIN host 
@@ -128,7 +130,10 @@ namespace EOLoginConsoleApp
                 {
                     if (request.Headers.Authorization.Scheme == "Basic")
                     {
-                        if (request.Headers.Authorization.Parameter == "QWRtaW46YUExIQ==")
+                        //"QWRtaW46YUExIQ==" is EO
+                        //"IEFkbWluOmFBMSE=" is Royalwood
+
+                        if (request.Headers.Authorization.Parameter == "IEFkbWluOmFBMSE=")
                         {
                             request.Headers.Add("EO-Header", "Admin:aA1!");
                             authorized = true;
@@ -163,7 +168,7 @@ namespace EOLoginConsoleApp
                 cancellationToken = _tokenSource.Token;
                 _tokenSource.Cancel();
                 HttpResponseMessage response = new HttpResponseMessage();
-                response = request.CreateResponse(HttpStatusCode.BadRequest);
+                response = request.CreateResponse(HttpStatusCode.Unauthorized);
                 response.Content = new StringContent("Not authorized");
                 return base.SendAsync(request, cancellationToken).ContinueWith(task =>
                 {

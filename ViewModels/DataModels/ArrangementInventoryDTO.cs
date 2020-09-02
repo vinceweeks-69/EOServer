@@ -17,10 +17,11 @@ namespace ViewModels.DataModels
         {
 
         }
-        public ArrangementInventoryDTO(long arrangementId, long inventoryId, string name, string size, long imageId, int quantity = 1)
+        public ArrangementInventoryDTO(long arrangementId, long inventoryId, string type, string name, string size, long imageId, int quantity = 1)
         {
             ArrangementId = arrangementId;
             InventoryId = inventoryId;
+            Type = type;
             ArrangementInventoryName = name;
             Size = size;
             ImageId = imageId;
@@ -29,6 +30,7 @@ namespace ViewModels.DataModels
 
         public long ArrangementId { get; set; }
         public long InventoryId { get; set; }
+        public string Type { get; set; }
         public long ArrangementInventoryInventoryMapId { get; set; }
         public string ArrangementInventoryName { get; set; }
         public int Quantity { get; set; }

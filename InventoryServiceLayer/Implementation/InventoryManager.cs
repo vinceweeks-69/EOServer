@@ -134,6 +134,16 @@ namespace InventoryServiceLayer.Implementation
             return persistence.GetContainers();
         }
 
+        public CustomerContainerResponse GetCustomerContainers(CustomerContainerRequest request)
+        {
+            return persistence.GetCustomerContainers(request);
+        }
+
+        public ApiResponse AddUpdateCustomerContainer(CustomerContainerRequest request)
+        {
+            return persistence.AddUpdateCustomerContainer(request);
+        }
+
         public ServiceCodeDTO GetServiceCodeById(long serviceCodeId)
         {
             return persistence.GetServiceCodeById(serviceCodeId);
@@ -198,9 +208,9 @@ namespace InventoryServiceLayer.Implementation
             return persistence.ContainerNameIsnotUnique(containerName);
         }
 
-        public bool ArrangementNameIsnotUnique(string arrangementName)
+        public bool ArrangementNameIsnotUnique(ArrangementDTO arrangement)
         {
-            return persistence.ArrangementNameIsnotUnique(arrangementName);
+            return persistence.ArrangementNameIsnotUnique(arrangement);
         }
 
         public long AddPlantName(AddPlantNameRequest request)
@@ -250,6 +260,11 @@ namespace InventoryServiceLayer.Implementation
         public long UpdateArrangement(UpdateArrangementRequest arrangementrequest)
         {
             return persistence.UpdateArrangement(arrangementrequest);
+        }
+
+        public ApiResponse AddImage(AddImageRequest request)
+        {
+            return persistence.AddImage(request);
         }
 
         public long AddPlantImage(byte[] imageBytes)
