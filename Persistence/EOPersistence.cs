@@ -289,14 +289,79 @@ namespace EO.Persistence
 
             try
             {
-                CustomerContainer cc = new CustomerContainer();
-                cc.CustomerId = request.CustomerContainer.CustomerId;
-                cc.Label = request.CustomerContainer.Label;
-                cc.ImageId = request.CustomerContainer.ImageId;
+                using (var scope = new TransactionScope(TransactionScopeOption.Required))
+                {
+                    CustomerContainer cc = new CustomerContainer();
 
-                dbContext.CustomerContainer.Add(cc);
-                dbContext.SaveChanges();
-                response.Id = cc.CustomerContainerId;
+                    if (request.CustomerContainer.CustomerContainerId == 0)
+                    {
+                        cc.CustomerId = request.CustomerContainer.CustomerId;
+                        cc.Label = request.CustomerContainer.Label;
+                        cc.ImageId = request.CustomerContainer.ImageId;
+
+                        dbContext.CustomerContainer.Add(cc);
+                    }
+                    else
+                    {
+                        cc = dbContext.CustomerContainer.Where(a => a.CustomerContainerId == request.CustomerContainer.CustomerContainerId).FirstOrDefault();
+
+                        if (cc != null && cc.CustomerContainerId == request.CustomerContainer.CustomerContainerId)
+                        {
+                            if (cc.ImageId != 0 && cc.ImageId != request.CustomerContainer.ImageId)
+                            {
+                                Image i = dbContext.Image.Where(a => a.ImageId == cc.ImageId).FirstOrDefault();
+
+                                if (i != null && i.ImageId == cc.ImageId)
+                                {
+                                    dbContext.Image.Remove(i);
+                                }
+                            }
+
+                            cc.Label = request.CustomerContainer.Label;
+                            cc.ImageId = request.CustomerContainer.ImageId;
+                        }
+                    }
+
+                    dbContext.SaveChanges();
+                    scope.Complete();
+                    response.Id = cc.CustomerContainerId;
+                }
+            }
+            catch (Exception ex)
+            {
+                int debug = 0;
+            }
+
+            return response;
+        }
+
+        public ApiResponse DeleteCustomerContainer(CustomerContainerRequest request)
+        {
+            ApiResponse response = new ApiResponse();
+
+            try
+            {
+                using (var scope = new TransactionScope(TransactionScopeOption.Required))
+                {
+                    CustomerContainer cc = dbContext.CustomerContainer.Where(a => a.CustomerContainerId == request.CustomerContainer.CustomerContainerId).FirstOrDefault();
+                    if (cc != null && cc.CustomerContainerId == request.CustomerContainer.CustomerContainerId)
+                    {
+
+                        if (cc.ImageId != 0)
+                        {
+                            Image i = dbContext.Image.Where(a => a.ImageId == request.CustomerContainer.ImageId).FirstOrDefault();
+                            if (i != null && i.ImageId == request.CustomerContainer.ImageId)
+                            {
+                                dbContext.Image.Remove(i);
+                            }
+                        }
+
+                        dbContext.CustomerContainer.Remove(cc);
+                        dbContext.SaveChanges();
+                        scope.Complete();
+                        response.Id = cc.CustomerContainerId;
+                    }
+                }
             }
             catch (Exception ex)
             {

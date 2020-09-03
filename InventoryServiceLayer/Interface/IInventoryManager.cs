@@ -60,6 +60,8 @@ namespace InventoryServiceLayer.Interface
 
         ApiResponse AddUpdateCustomerContainer(CustomerContainerRequest request);
 
+        ApiResponse DeleteCustomerContainer(CustomerContainerRequest request);
+
         List<ServiceCodeDTO> GetAllServiceCodes();
 
         GetKvpLongStringResponse GetInventoryList();

@@ -86,6 +86,8 @@ namespace EO.Persistence
 
         ApiResponse AddUpdateCustomerContainer(CustomerContainerRequest request);
 
+        ApiResponse DeleteCustomerContainer(CustomerContainerRequest request);
+
         long ServiceCodeExists(ServiceCodeDTO serviceCodeDTO);
 
         long AddServiceCode(ServiceCodeDTO serviceCodeDTO);

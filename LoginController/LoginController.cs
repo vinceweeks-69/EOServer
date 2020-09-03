@@ -519,6 +519,12 @@ namespace EO.Login_Controller
             return inventoryManager.AddUpdateCustomerContainer(request);
         }
 
+        [HttpPost]
+        public ApiResponse DeleteCustomerContainer(CustomerContainerRequest request)
+        {
+            return inventoryManager.DeleteCustomerContainer(request);
+        }
+
         /// <summary>
         /// Plant Types 
         /// Brassidium=15

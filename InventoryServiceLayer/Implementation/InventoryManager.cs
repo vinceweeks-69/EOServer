@@ -144,6 +144,11 @@ namespace InventoryServiceLayer.Implementation
             return persistence.AddUpdateCustomerContainer(request);
         }
 
+        public ApiResponse DeleteCustomerContainer(CustomerContainerRequest request)
+        {
+            return persistence.DeleteCustomerContainer(request);
+        }
+
         public ServiceCodeDTO GetServiceCodeById(long serviceCodeId)
         {
             return persistence.GetServiceCodeById(serviceCodeId);
