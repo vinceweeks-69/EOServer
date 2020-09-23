@@ -49,7 +49,7 @@ namespace ViewModels.DataModels
 
         public string Size { get; set; }
 
-        public long GroupId { get; set; }
+        public long? GroupId { get; set; }
 
         protected void OnPropertyChanged(string name)
         {

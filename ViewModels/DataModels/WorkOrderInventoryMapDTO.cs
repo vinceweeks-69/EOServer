@@ -22,5 +22,7 @@ namespace ViewModels.DataModels
         public int Quantity { get; set; }
 
         public string Size { get; set; }
+
+        public long? GroupId { get; set; }
     }
 }

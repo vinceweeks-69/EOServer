@@ -1399,7 +1399,8 @@ namespace EO.Persistence
                         WorkOrderId = map.WorkOrderId,
                         InventoryId = map.InventoryId,
                         //InventoryName = map.Inventory.InventoryName,
-                        Quantity = map.Quantity
+                        Quantity = map.Quantity,
+                        GroupId = map.GroupId
                     });
                 }
             });
@@ -1520,7 +1521,8 @@ namespace EO.Persistence
                             WorkOrderId = map.WorkOrderId,
                             InventoryId = map.InventoryId,
                             //InventoryName = map.Inventory.InventoryName,
-                            Quantity = map.Quantity
+                            Quantity = map.Quantity,
+                            GroupId = map.GroupId
                         });
                     }
                 });

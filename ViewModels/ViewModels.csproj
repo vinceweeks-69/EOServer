@@ -62,6 +62,7 @@
     <Compile Include="ControllerModels\ApiResponse.cs" />
     <Compile Include="ControllerModels\CustomerContainerRequest.cs" />
     <Compile Include="ControllerModels\ErrorLogRequest.cs" />
+    <Compile Include="ControllerModels\GenericGetRequest.cs" />
     <Compile Include="ControllerModels\GetContainerTypeResponse.cs" />
     <Compile Include="ControllerModels\GetCustomerResponse.cs" />
     <Compile Include="ControllerModels\GetByteArrayResponse.cs" />

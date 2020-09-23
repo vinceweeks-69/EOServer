@@ -19,7 +19,12 @@ namespace InventoryServiceLayer.Implementation
 
         public InventoryManager()
         {
-            this.persistence = new EOPersistence();
+            
+        }
+
+        public InventoryManager(IEOPersistence persistence)
+        {
+            this.persistence = persistence;
         }
 
         public GetUserResponse GetUsers()

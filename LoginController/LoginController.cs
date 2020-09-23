@@ -26,14 +26,17 @@ namespace EO.Login_Controller
     public class LoginController : ApiController
     {
         private ILoginManager loginManager;
-
         private IInventoryManager inventoryManager;
 
         public LoginController()
         {
-            
-            loginManager = new LoginManager();
-            inventoryManager = new InventoryManager();
+
+        }
+
+        public LoginController(ILoginManager loginManager, IInventoryManager inventoryManager)
+        {
+            this.loginManager = loginManager;
+            this.inventoryManager = inventoryManager;
         }
 
         private string Fix(string s)
@@ -186,6 +189,7 @@ namespace EO.Login_Controller
             else
             {
                 response.EOAccess = "User/Pwd confirmed";
+                response.RoleId = loginDTO.RoleId;
             }
 
             return response;

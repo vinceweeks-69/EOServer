@@ -16,6 +16,8 @@ namespace ViewModels.DataModels
          
         public string Type { get; set; }
 
+        public long InventoryTypeId { get; set; }
+
         public string Name { get; set; }
 
         public string Size { get; set; }

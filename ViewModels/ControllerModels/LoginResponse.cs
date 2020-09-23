@@ -17,5 +17,7 @@ namespace ViewModels.ControllerModels
     public class LoginResponse : ApiResponse
     {
         public string EOAccess { get; set; }
+
+        public long RoleId { get; set; }
     }
 }

@@ -1,6 +1,11 @@
-﻿using EO.Login_Controller;
+﻿using Autofac;
+using Autofac.Integration.WebApi;
+using EO.Login_Controller;
+using EO.Persistence;
 using EO.ViewModels.ControllerModels;
 using EO.ViewModels.DataModels;
+using InventoryServiceLayer.Implementation;
+using LoginServiceLayer;
 using LoginServiceLayer.Interface;
 using Microsoft.Owin.Hosting;
 using Newtonsoft.Json;
@@ -12,6 +17,7 @@ using System.Management;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -38,7 +44,7 @@ namespace EOLoginConsoleApp
             //options.Urls.Add("http://192.168.0.1");
             //options.Urls.Add("http://192.168.1.1");
 
-            options.Urls.Add("http://10.0.0.5:9000"); //Me royalwood
+            options.Urls.Add("http://10.0.0.4:9000"); //Me royalwood
 
             //options.Urls.Add("http://10.1.10.148:9000");  //Me EO
 
@@ -186,7 +192,8 @@ namespace EOLoginConsoleApp
             message.Headers.TryGetValues("EO-Header", out values);
             if (values != null && values.ToList().Count == 1)
             {
-                LoginManager manager = new LoginManager();
+                LoginManager manager = new LoginManager(new EOPersistence());
+
                 LoginDTO login = new LoginDTO();
                 string[] userNamePwd = values.First().Split(':');
                 if (userNamePwd.Length == 2)
@@ -225,7 +232,23 @@ namespace EOLoginConsoleApp
 
             SwaggerConfig.Register(config);
 
-            //SwaggerConfig.Register();
+            ContainerBuilder containerBuilder = new ContainerBuilder();
+                       
+            containerBuilder.RegisterModule<PersistenceModule>();
+
+            containerBuilder.RegisterModule<InventoryServiceLayerModule>();
+
+            containerBuilder.RegisterModule<LoginManagerModule>();
+
+            containerBuilder.RegisterModule<LoginControllerModule>();
+
+            IContainer container = containerBuilder.Build();
+
+            config.DependencyResolver = new AutofacWebApiDependencyResolver(container);
+
+            appBuilder.UseAutofacMiddleware(container);
+
+            appBuilder.UseAutofacWebApi(config);
 
             appBuilder.UseWebApi(config);
         }

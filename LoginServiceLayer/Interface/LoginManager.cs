@@ -13,9 +13,14 @@ namespace LoginServiceLayer.Interface
     {
         private IEOPersistence persistence;
 
-        public LoginManager()
+        //public LoginManager()
+        //{
+        //    int debug = 1;
+        //}
+
+        public LoginManager(IEOPersistence persistence)
         {
-            persistence = new EOPersistence();
+            this.persistence = persistence;
         }
 
         public LoginDTO GetUser(LoginDTO request)

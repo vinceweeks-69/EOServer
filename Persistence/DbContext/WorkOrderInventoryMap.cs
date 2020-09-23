@@ -9,6 +9,7 @@ namespace EO.DatabaseContext
         public long WorkOrderId { get; set; }
         public long InventoryId { get; set; }
         public int Quantity { get; set; }
+        public long? GroupId { get; set; }
         public virtual Inventory Inventory { get; set; }
         public virtual WorkOrder WorkOrder { get; set; }
     }

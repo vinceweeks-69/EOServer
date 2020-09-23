@@ -1501,6 +1501,10 @@ namespace EO.DatabaseContext
                     .HasColumnName("quantity")
                     .HasColumnType("int(11) unsigned");
 
+                entity.Property(e => e.GroupId)
+                   .HasColumnName("group_id")
+                   .HasColumnType("bigint(20) unsigned");
+
                 entity.HasOne(d => d.Inventory)
                     .WithMany(p => p.WorkOrderInventoryMap)
                     .HasForeignKey(d => d.InventoryId)
