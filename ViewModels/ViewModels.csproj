@@ -114,6 +114,7 @@
     <Compile Include="DataModels\PlantInventoryDTO.cs" />
     <Compile Include="DataModels\PlantNameDTO.cs" />
     <Compile Include="DataModels\PlantTypeDTO.cs" />
+    <Compile Include="DataModels\ProductDTO.cs" />
     <Compile Include="DataModels\ServiceCodeDTO.cs" />
     <Compile Include="DataModels\ShipmentDTO.cs" />
     <Compile Include="DataModels\ShipmentInventoryDTO.cs" />

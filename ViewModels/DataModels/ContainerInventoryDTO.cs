@@ -33,5 +33,24 @@ namespace ViewModels.DataModels
             Inventory = inventory;
             ImageId = imageId;
         }
+
+        public ArrangementInventoryFilteredItem ToFilteredItem()
+        {
+            return
+
+                new ArrangementInventoryFilteredItem()
+                {
+                    Id = Inventory.InventoryId,
+                    Type = Inventory.InventoryName,
+                    TypeId = Container.ContainerTypeId,
+                    InventoryTypeId = Inventory.InventoryTypeId,
+                    Name = Container.ContainerName,
+                    Size = Container.ContainerSize,
+                    ServiceCodeId = Inventory.ServiceCodeId,
+                    ServiceCode = Inventory.ServiceCodeName,
+                    ImageId = ImageId
+                };
+
+        }
     }
 }
