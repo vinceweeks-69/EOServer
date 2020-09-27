@@ -2904,8 +2904,15 @@ namespace EO.Persistence
 
                     List<WorkOrderInventoryMap> mapList = new List<WorkOrderInventoryMap>();
 
+                    //to accomodate Melissa's UI requests, Arrangements are grouped with spacing
+                    //and header rows - don't save these
                     foreach (WorkOrderInventoryMapDTO map in request.WorkOrderInventoryMap)
                     {
+                        if(map.InventoryId == 0 && map.Quantity == 0 && map.GroupId !=0)
+                        {
+                            continue;
+                        }
+
                         if (inventoryQuantities.ContainsKey(map.InventoryId))
                         {
                             inventoryQuantities[map.InventoryId] += map.Quantity;
@@ -2919,7 +2926,8 @@ namespace EO.Persistence
                         {
                             InventoryId = map.InventoryId,
                             Quantity = map.Quantity,
-                            WorkOrderId = w.WorkOrderId
+                            WorkOrderId = w.WorkOrderId,
+                            GroupId = map.GroupId
                         });
                     }
 
