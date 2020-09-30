@@ -974,6 +974,14 @@ namespace EO.Login_Controller
         }
 
         [HttpPost]
+        public ApiResponse DoesCustomerExist(AddCustomerRequest request)
+        {
+            ApiResponse response = new ApiResponse();
+            response.Id = inventoryManager.DoesCustomerExist(request);
+            return response;
+        }
+
+        [HttpPost]
         public GetLongIdResponse DoesContainerExist(ContainerDTO container)
         {
             GetLongIdResponse response = new GetLongIdResponse();

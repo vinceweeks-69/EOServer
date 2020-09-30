@@ -228,6 +228,10 @@ namespace InventoryServiceLayer.Implementation
             return persistence.AddPlantName(request);
         }
 
+        public long DoesCustomerExist(AddCustomerRequest request)
+        {
+            return persistence.DoesCustomerExist(request);
+        }
         public long DoesPlantNameExist(string plantName)
         {
             return persistence.PlantNameExists(plantName);

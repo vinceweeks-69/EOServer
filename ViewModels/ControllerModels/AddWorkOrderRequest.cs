@@ -18,12 +18,15 @@ namespace ViewModels.ControllerModels
             WorkOrder = new WorkOrderDTO();
             ImageMap = new List<WorkOrderImageMapDTO>();
             WorkOrderInventoryMap = new List<WorkOrderInventoryMapDTO>();
+            NotInInventory = new List<NotInInventoryDTO>();
         }
         public WorkOrderDTO WorkOrder { get; set; }
 
         public List<WorkOrderImageMapDTO> ImageMap { get; set; }
 
         public List<WorkOrderInventoryMapDTO> WorkOrderInventoryMap { get; set; }
+
+        public List<NotInInventoryDTO> NotInInventory { get; set; }
     }
 
     /// <summary>

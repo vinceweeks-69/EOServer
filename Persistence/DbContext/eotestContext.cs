@@ -53,6 +53,7 @@ namespace EO.DatabaseContext
         public virtual DbSet<WorkOrderPayment> WorkOrderPayment { get; set; }
         public virtual DbSet<WorkOrderImageMap> WorkOrderImageMap { get; set; }
         public virtual DbSet<WorkOrderInventoryMap> WorkOrderInventoryMap { get; set; }
+        public virtual DbSet<NotInInventory> NotInInventory { get; set; }
         public virtual DbSet<Shipment> Shipment { get; set; }
         public virtual DbSet<ShipmentInventoryMap> ShipmentInventoryMap { get; set; }
         public virtual DbSet<ShipmentInventoryImageMap> ShipmentInventoryImageMap { get; set; }
@@ -1516,6 +1517,35 @@ namespace EO.DatabaseContext
                     .HasForeignKey(d => d.WorkOrderId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_workorder_inventory");
+            });
+
+            modelBuilder.Entity<NotInInventory>(entity =>
+            {
+                entity.ToTable("not_in_inventory", "eotest");
+
+                entity.Property(e => e.NotInInventoryId)
+                    .HasColumnName("not_in_inventory_id")
+                    .HasColumnType("bigint(20) unsigned");
+
+                entity.Property(e => e.WorkOrderId)
+                    .HasColumnName("work_order_id")
+                    .HasColumnType("bigint(20) unsigned");
+
+                entity.Property(e => e.NotInInventoryName)
+                    .HasColumnName("not_in_inventory_name")
+                    .HasColumnType("varchar(100");
+
+                entity.Property(e => e.NotInInventorySize)
+                    .HasColumnName("not_in_inventory_size")
+                    .HasColumnType("varchar(50");
+
+                entity.Property(e => e.NotInInventoryPrice)
+                    .HasColumnName("not_in_inventory_price")
+                    .HasColumnType("decimal(15,2");
+
+                entity.Property(e => e.NotInInventoryQuantity)
+                    .HasColumnName("not_in_inventory_quantity")
+                    .HasColumnType("int(11) unsigned");
             });
 
             modelBuilder.Entity<VendorAddressMap>(entity => 

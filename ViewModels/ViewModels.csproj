@@ -108,6 +108,7 @@
     <Compile Include="DataModels\LoginDTO.cs" />
     <Compile Include="DataModels\MaterialDTO.cs" />
     <Compile Include="DataModels\MaterialInventoryDTO.cs" />
+    <Compile Include="DataModels\NotInInventoryDTO.cs" />
     <Compile Include="DataModels\PersonAndAddressDTO.cs" />
     <Compile Include="DataModels\PersonDTO.cs" />
     <Compile Include="DataModels\PlantDTO.cs" />

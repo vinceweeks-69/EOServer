@@ -24,5 +24,11 @@ namespace ViewModels.DataModels
         public string Size { get; set; }
 
         public long? GroupId { get; set; }
+
+        public string NotInInventoryName { get; set; }
+
+        public string NotInInventorySize { get; set; }
+
+        public decimal NotInInventoryPrice { get; set; }
     }
 }

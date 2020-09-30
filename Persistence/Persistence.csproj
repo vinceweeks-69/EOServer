@@ -185,6 +185,7 @@
     <Compile Include="DbContext\InventoryMaterialMap.cs" />
     <Compile Include="DbContext\MaterialName.cs" />
     <Compile Include="DbContext\MaterialType.cs" />
+    <Compile Include="DbContext\NotInInventory.cs" />
     <Compile Include="DbContext\Person.cs" />
     <Compile Include="DbContext\PersonAddressMap.cs" />
     <Compile Include="DbContext\Plant.cs" />

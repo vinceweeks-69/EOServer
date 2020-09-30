@@ -51,6 +51,12 @@ namespace ViewModels.DataModels
 
         public long? GroupId { get; set; }
 
+        public string NotInInventoryName {get; set;}
+
+        public string NotInInventorySize { get; set; }
+
+        public decimal NotInInventoryPrice { get; set; }
+
         protected void OnPropertyChanged(string name)
         {
             PropertyChangedEventHandler handler = PropertyChanged;

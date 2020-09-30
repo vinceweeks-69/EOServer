@@ -92,6 +92,8 @@ namespace EO.Persistence
 
         long AddServiceCode(ServiceCodeDTO serviceCodeDTO);
 
+        long DoesCustomerExist(AddCustomerRequest request);
+
         long PlantNameExists(string plantName);
 
         long AddPlantName(AddPlantNameRequest request);

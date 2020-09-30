@@ -10,6 +10,9 @@ namespace EO.DatabaseContext
         public long InventoryId { get; set; }
         public int Quantity { get; set; }
         public long? GroupId { get; set; }
+        public string NotInInventoryName { get; set; }
+        public string NotInInventorySize { get; set; }
+        public decimal NotInInventoryPrice { get; set; }
         public virtual Inventory Inventory { get; set; }
         public virtual WorkOrder WorkOrder { get; set; }
     }

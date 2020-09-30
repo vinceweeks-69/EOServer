@@ -42,9 +42,9 @@ namespace EOLoginConsoleApp
             //options.Urls.Add(GetNetworkConfig());
 
             //options.Urls.Add("http://192.168.0.1");
-            //options.Urls.Add("http://192.168.1.1");
+            options.Urls.Add("http://192.168.1.134");
 
-            options.Urls.Add("http://10.0.0.4:9000"); //Me royalwood
+            //options.Urls.Add("http://10.0.0.4:9000"); //Me royalwood
 
             //options.Urls.Add("http://10.1.10.148:9000");  //Me EO
 

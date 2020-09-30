@@ -94,6 +94,8 @@ namespace InventoryServiceLayer.Interface
 
         long AddPlantType(AddPlantTypeRequest request);
 
+        long DoesCustomerExist(AddCustomerRequest request);
+
         long DoesPlantNameExist(string plantName);
 
         long DoesPlantTypeExist(string plantType);

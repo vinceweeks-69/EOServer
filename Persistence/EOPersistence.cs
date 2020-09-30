@@ -657,6 +657,15 @@ namespace EO.Persistence
             return plantId;
         }
 
+        public long DoesCustomerExist(AddCustomerRequest request)
+        {
+            Person p = dbContext.Person.Where(a => a.FirstName == request.Customer.Person.first_name &&
+                a.LastName == request.Customer.Person.last_name && a.Email == request.Customer.Person.email &&
+                a.PhonePrimary == request.Customer.Person.phone_primary).FirstOrDefault();
+
+            return p.PersonId;
+        }
+
         public long PlantNameExists(string plantName)
         {
             long plantNameId = 0;
@@ -1400,7 +1409,10 @@ namespace EO.Persistence
                         InventoryId = map.InventoryId,
                         //InventoryName = map.Inventory.InventoryName,
                         Quantity = map.Quantity,
-                        GroupId = map.GroupId
+                        GroupId = map.GroupId,
+                        NotInInventoryName = map.NotInInventoryName,
+                        NotInInventorySize = map.NotInInventorySize,
+                        NotInInventoryPrice = map.NotInInventoryPrice
                     });
                 }
             });
@@ -1411,6 +1423,21 @@ namespace EO.Persistence
             {
                 var i = inventoryList.Where(a => a.InventoryId == item.InventoryId).First();
                 i.InventoryName = item.InventoryName;
+            });
+
+            List<NotInInventoryDTO> notInInventory = new List<NotInInventoryDTO>();
+
+            dbContext.NotInInventory.Where(a => a.WorkOrderId == workOrderId).ForEachAsync(item =>
+            {
+                notInInventory.Add(new NotInInventoryDTO()
+                {
+                    NotInInventoryId = item.NotInInventoryId,
+                    WorkOrderId = item.WorkOrderId,
+                    NotInInventoryName = item.NotInInventoryName,
+                    NotInInventorySize = item.NotInInventorySize,
+                    NotInInventoryQuantity = item.NotInInventoryQuantity,
+                    NotInInventoryPrice = item.NotInInventoryPrice
+                });
             });
 
             List<WorkOrderImageMapDTO> imageMap = new List<WorkOrderImageMapDTO>();
@@ -1431,7 +1458,8 @@ namespace EO.Persistence
             workOrderResponse.WorkOrder = w;
             workOrderResponse.ImageMap = imageMap;
             workOrderResponse.WorkOrderList = inventoryList;
-            
+            workOrderResponse.NotInInventory = notInInventory;
+
             return workOrderResponse;
         }
 
@@ -1522,7 +1550,10 @@ namespace EO.Persistence
                             InventoryId = map.InventoryId,
                             //InventoryName = map.Inventory.InventoryName,
                             Quantity = map.Quantity,
-                            GroupId = map.GroupId
+                            GroupId = map.GroupId,
+                            NotInInventoryName = map.NotInInventoryName,
+                            NotInInventorySize = map.NotInInventorySize,
+                            NotInInventoryPrice = map.NotInInventoryPrice
                         });
                     }
                 });
@@ -1533,6 +1564,21 @@ namespace EO.Persistence
                 {
                     var i = inventoryList.Where(a => a.InventoryId == item.InventoryId).First();
                     i.InventoryName = item.InventoryName;
+                });
+
+                List<NotInInventoryDTO> notInInventory = new List<NotInInventoryDTO>();
+
+                dbContext.NotInInventory.Where(a => a.WorkOrderId == wo.WorkOrderId).ToList().ForEach(item =>
+                {
+                    notInInventory.Add(new NotInInventoryDTO()
+                    {
+                        NotInInventoryId = item.NotInInventoryId,
+                        WorkOrderId = item.WorkOrderId,
+                        NotInInventoryName = item.NotInInventoryName,
+                        NotInInventorySize = item.NotInInventorySize,
+                        NotInInventoryQuantity = item.NotInInventoryQuantity,
+                        NotInInventoryPrice = item.NotInInventoryPrice
+                    });
                 });
 
                 List<WorkOrderImageMapDTO> imageMap = new List<WorkOrderImageMapDTO>();
@@ -1551,6 +1597,7 @@ namespace EO.Persistence
                 r.WorkOrder = w;
                 r.ImageMap = imageMap;
                 r.WorkOrderList = inventoryList;
+                r.NotInInventory = notInInventory;
 
                 workOrderList.Add(r);
             });
@@ -2922,17 +2969,40 @@ namespace EO.Persistence
                             inventoryQuantities.Add(map.InventoryId, map.Quantity);
                         }
 
+                        if(!String.IsNullOrEmpty(map.NotInInventoryName) && !String.IsNullOrEmpty(map.NotInInventorySize) && map.NotInInventoryPrice > 0)
+                        {
+                            map.InventoryId = 0;
+                        }
+
                         mapList.Add(new WorkOrderInventoryMap()
                         {
                             InventoryId = map.InventoryId,
                             Quantity = map.Quantity,
                             WorkOrderId = w.WorkOrderId,
-                            GroupId = map.GroupId
+                            GroupId = map.GroupId,
+                            NotInInventoryName = map.NotInInventoryName,
+                            NotInInventorySize = map.NotInInventorySize,
+                            NotInInventoryPrice = map.NotInInventoryPrice
                         });
                     }
 
                     dbContext.WorkOrderInventoryMap.AddRange(mapList);
 
+                    List<NotInInventory> notInInventoryList = new List<NotInInventory>();
+
+                    foreach (NotInInventoryDTO notInInventory in request.NotInInventory)
+                    {
+                        notInInventoryList.Add(new NotInInventory()
+                        {
+                            WorkOrderId = notInInventory.WorkOrderId,
+                            NotInInventoryName = notInInventory.NotInInventoryName,
+                            NotInInventorySize = notInInventory.NotInInventorySize,
+                            NotInInventoryQuantity = notInInventory.NotInInventoryQuantity,
+                            NotInInventoryPrice = notInInventory.NotInInventoryPrice
+                        });
+                    }
+
+                    
                     if (request.ImageMap != null && request.ImageMap.Count > 0)
                     {
                         List<WorkOrderImageMap> imageMapList = new List<WorkOrderImageMap>();
@@ -3054,7 +3124,10 @@ namespace EO.Persistence
                             {
                                 InventoryId = map.InventoryId,
                                 Quantity = map.Quantity,
-                                WorkOrderId = updatedWorkOrderId
+                                WorkOrderId = updatedWorkOrderId,
+                                NotInInventoryName = map.NotInInventoryName,
+                                NotInInventorySize = map.NotInInventorySize,
+                                NotInInventoryPrice = map.NotInInventoryPrice
                             });
                         }
 
@@ -4342,32 +4415,42 @@ namespace EO.Persistence
 
             try
             {
+                decimal subTotal = 0;
+                decimal tax = 0;
+
                 foreach (WorkOrderInventoryItemDTO workOrderItem in request.WorkOrderItems)
                 {
                     Inventory i = dbContext.Inventory.Where(a => a.InventoryId == workOrderItem.InventoryId).FirstOrDefault();
 
+                    subTotal = 0;
+                    tax = 0;
+
                     if (i != null && i.InventoryId > 0)
                     {
                         ServiceCode code = dbContext.ServiceCode.Where(a => a.ServiceCodeId == i.ServiceCodeId).FirstOrDefault();
-
-                        decimal subTotal = 0;
 
                         if (code.Price.HasValue)
                         {
                             subTotal = code.Price.Value * workOrderItem.Quantity;
                         }
 
-                        decimal tax = 0;
-
                         if(code.Taxable)
                         {
                             tax = subTotal * 0.06M;
                         }
-
-                        response.SubTotal += subTotal;
-
-                        response.Tax += tax;
                     }
+
+                    response.SubTotal += subTotal;
+
+                    response.Tax += tax;
+                }
+
+                foreach(NotInInventoryDTO notInInventory in request.NotInInventory)
+                {
+                    subTotal = notInInventory.NotInInventoryPrice * notInInventory.NotInInventoryQuantity;
+                    tax = subTotal * 0.06M;
+                    response.SubTotal += subTotal;
+                    response.Tax += tax;
                 }
 
                 response.Total = response.SubTotal + response.Tax;
