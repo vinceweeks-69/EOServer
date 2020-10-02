@@ -10,6 +10,7 @@ namespace ViewModels.DataModels
     {
         public long NotInInventoryId { get; set; }
         public long WorkOrderId { get; set; }
+        public long? ArrangementId { get; set; }
         public string NotInInventoryName { get; set; }
         public string NotInInventorySize { get; set; }
         public decimal NotInInventoryPrice { get; set; }

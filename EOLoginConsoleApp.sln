@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28010.2048
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30330.147
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ViewModels", "ViewModels\ViewModels.csproj", "{C4819671-9D35-4014-B1D3-80F9F0184501}"
 EndProject
@@ -16,6 +16,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoginController", "LoginController\LoginController.csproj", "{721C714C-AA3A-4FDF-98A1-942ED04834AB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EOLoginConsoleApp", "EOLoginConsoleApp\EOLoginConsoleApp.csproj", "{8D67BF85-5752-4C7D-94B0-EE42EB329078}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "EOInstaller", "EOInstaller\EOInstaller.vdproj", "{DAB6447D-0389-4182-BFD3-4D9075114C1E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,8 @@ Global
 		{8D67BF85-5752-4C7D-94B0-EE42EB329078}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8D67BF85-5752-4C7D-94B0-EE42EB329078}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8D67BF85-5752-4C7D-94B0-EE42EB329078}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DAB6447D-0389-4182-BFD3-4D9075114C1E}.Debug|Any CPU.ActiveCfg = Debug
+		{DAB6447D-0389-4182-BFD3-4D9075114C1E}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

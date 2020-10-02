@@ -42,7 +42,7 @@ namespace EOLoginConsoleApp
             //options.Urls.Add(GetNetworkConfig());
 
             //options.Urls.Add("http://192.168.0.1");
-            options.Urls.Add("http://192.168.1.134");
+            //options.Urls.Add("http://192.168.1.134");
 
             //options.Urls.Add("http://10.0.0.4:9000"); //Me royalwood
 
@@ -53,6 +53,8 @@ namespace EOLoginConsoleApp
             //options.Urls.Add("http://192.168.0.129:9000");    //Me CA
 
             //options.Urls.Add("http://192.168.1.134:9000/");   //Thom
+
+            options.Urls.Add("http://10.1.10.36:9000");   //Thom
 
             options.Urls.Add("http://*:9000");
 
@@ -81,40 +83,6 @@ namespace EOLoginConsoleApp
 
                 }
             }
-        }
-
-        static private string GetNetworkConfig()
-        {
-            string LAN_Address = "http://127.0.0.1:9000";
-
-            ManagementClass mc = new ManagementClass("Win32_NetworkAdapterConfiguration");
-
-            ManagementObjectCollection nics = mc.GetInstances();
-
-            List<string> enabledIPs = new List<string>();
-
-            foreach (ManagementObject nic in nics)
-            {
-                if (Convert.ToBoolean(nic["ipEnabled"]) == true)
-                {
-                    string IpAddress = (nic["IPAddress"] as String[])[0];
-
-                    enabledIPs.Add(IpAddress);
-
-                    string IPSubnet = (nic["IPSubnet"] as String[])[0];
-
-                    string DefaultGateWay = (nic["DefaultIPGateway"] as String[])[0];
-                }
-            }
-
-            if (enabledIPs.Count > 1)
-            {
-                LAN_Address = enabledIPs[1];
-
-                LAN_Address = "http://" + LAN_Address + ":9000";
-            }
-
-            return LAN_Address;
         }
     }
 

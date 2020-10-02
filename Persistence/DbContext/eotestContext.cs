@@ -238,6 +238,16 @@ namespace EO.DatabaseContext
                     .HasColumnName("update_date")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
+                entity.Property(e => e.IsGift)
+                   .HasColumnName("is_gift")
+                   .HasColumnType("int(11) unsigned");
+
+                entity.Property(e => e.GiftMessage)
+                  .IsRequired()
+                  .HasColumnName("gift_message")
+                  .HasMaxLength(1000)
+                  .IsUnicode(false);
+
                 entity.HasOne(d => d.ServiceCode)
                     .WithMany(p => p.Arrangement)
                     .HasForeignKey(d => d.ServiceCodeId)
@@ -1528,22 +1538,34 @@ namespace EO.DatabaseContext
                     .HasColumnType("bigint(20) unsigned");
 
                 entity.Property(e => e.WorkOrderId)
+                    .IsRequired()
                     .HasColumnName("work_order_id")
                     .HasColumnType("bigint(20) unsigned");
 
+                entity.Property(e => e.ArrangementId)
+                    .HasColumnName("arrangement_id")
+                    .HasColumnType("bigint(20) unsigned");
+
                 entity.Property(e => e.NotInInventoryName)
+                    .IsRequired()
                     .HasColumnName("not_in_inventory_name")
-                    .HasColumnType("varchar(100");
+                    .IsRequired()
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.NotInInventorySize)
+                    .IsRequired()
                     .HasColumnName("not_in_inventory_size")
-                    .HasColumnType("varchar(50");
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.NotInInventoryPrice)
+                    .IsRequired()
                     .HasColumnName("not_in_inventory_price")
-                    .HasColumnType("decimal(15,2");
+                    .HasColumnType("decimal(15,2)");
 
                 entity.Property(e => e.NotInInventoryQuantity)
+                    .IsRequired()
                     .HasColumnName("not_in_inventory_quantity")
                     .HasColumnType("int(11) unsigned");
             });

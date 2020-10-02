@@ -20,7 +20,8 @@ namespace EO.DatabaseContext
         public string LocationName { get; set; }
         public DateTime UpdateDate { get; set; }
         public long? ServiceCodeId { get; set; }
-
+        public int IsGift { get; set; }
+        public string GiftMessage { get; set; }
         public virtual ServiceCode ServiceCode { get; set; }
         public virtual ICollection<ArrangementImageMap> ArrangementImageMap { get; set; }
         public virtual ICollection<ArrangementInventoryMap> ArrangementInventoryMap { get; set; }
