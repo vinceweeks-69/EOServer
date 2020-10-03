@@ -18,6 +18,7 @@ namespace ViewModels.ControllerModels
         public List<WorkOrderImageMapDTO> ImageMap { get; set; }
         public List<WorkOrderInventoryMapDTO> WorkOrderList { get; set; }
         public List<NotInInventoryDTO> NotInInventory { get; set; }
+        public List<GetArrangementResponse> Arrangements { get; set; }
 
         public WorkOrderResponse()
         {
@@ -25,6 +26,7 @@ namespace ViewModels.ControllerModels
             ImageMap = new List<WorkOrderImageMapDTO>();
             WorkOrderList = new List<WorkOrderInventoryMapDTO>();
             NotInInventory = new List<NotInInventoryDTO>();
+            Arrangements = new List<GetArrangementResponse>();
         }
     }
 }

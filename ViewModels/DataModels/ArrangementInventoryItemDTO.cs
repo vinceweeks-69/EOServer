@@ -18,16 +18,19 @@ namespace ViewModels.DataModels
 
         }
 
-        public ArrangementInventoryItemDTO(long arrangementId, long inventoryId, string inventoryName, long imageId)
+        public ArrangementInventoryItemDTO(long arrangementId, long inventoryId, long inventoryTypeId, string inventoryName, long imageId)
         {
             ArrangementId = arrangementId;
             InventoryId = inventoryId;
+            InventoryTypeId = inventoryTypeId;
             InventoryName = inventoryName;
             ImageId = imageId;
         }
         public long ArrangementId { get; set; }
 
         public long InventoryId { get; set; }
+
+        public long InventoryTypeId { get; set; }
 
         public string InventoryName { get; set; }
 

@@ -105,14 +105,20 @@ namespace ViewModels.ControllerModels
     public class GetArrangementResponse //: ApiResponse
     {
         public ArrangementDTO Arrangement { get; set; }
+
         public List<ArrangementInventoryDTO> ArrangementList { get; set; }
 
+        public List<NotInInventoryDTO> NotInInventory { get; set; }
+
         public List<ImageResponse> Images { get; set; }
+
         public GetArrangementResponse()
         {
             Arrangement = new ArrangementDTO();
 
             ArrangementList = new List<ArrangementInventoryDTO>();
+
+            NotInInventory = new List<NotInInventoryDTO>();
 
             Images = new List<ImageResponse>();
         }

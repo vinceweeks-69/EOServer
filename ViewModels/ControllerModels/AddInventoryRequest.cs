@@ -113,6 +113,8 @@ namespace ViewModels.ControllerModels
 
         public List<ArrangementInventoryDTO> ArrangementInventory { get; set; }
 
+        public List<NotInInventoryDTO>  NotInInventory { get; set; }
+
         public long ImageId { get; set; }
 
         public long? GroupId { get; set; }

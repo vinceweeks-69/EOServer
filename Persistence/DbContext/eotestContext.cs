@@ -202,13 +202,11 @@ namespace EO.DatabaseContext
                     .HasColumnType("bigint(20) unsigned");
 
                 entity.Property(e => e.ArrangementName)
-                    .IsRequired()
                     .HasColumnName("arrangement_name")
                     .HasMaxLength(255)
                     .IsUnicode(false);
 
                 entity.Property(e => e.DesignerName)
-                   .IsRequired()
                    .HasColumnName("designer_name")
                    .HasMaxLength(45)
                    .IsUnicode(false);
@@ -226,7 +224,6 @@ namespace EO.DatabaseContext
                    .HasColumnType("bigint(20) unsigned");
 
                 entity.Property(e => e.LocationName)
-                  .IsRequired()
                   .HasColumnName("location_name")
                   .HasMaxLength(255)
                   .IsUnicode(false);
@@ -244,7 +241,6 @@ namespace EO.DatabaseContext
                    .HasColumnType("int(11) unsigned");
 
                 entity.Property(e => e.GiftMessage)
-                  .IsRequired()
                   .HasColumnName("gift_message")
                   .HasMaxLength(1000)
                   .IsUnicode(false);
@@ -345,6 +341,10 @@ namespace EO.DatabaseContext
 
                 entity.Property(e => e.InventoryId)
                     .HasColumnName("inventory_id")
+                    .HasColumnType("bigint(20) unsigned");
+
+                entity.Property(e => e.InventoryTypeId)
+                    .HasColumnName("inventory_type_id")
                     .HasColumnType("bigint(20) unsigned");
 
                 entity.Property(e => e.Quantity)
@@ -1541,7 +1541,7 @@ namespace EO.DatabaseContext
                 //    .HasName("fk_workorder_workorder_idx");
 
                 entity.Property(e => e.WorkOrderArrangementMapId)
-                    .HasColumnName("work_order_arrangemet_map_id")
+                    .HasColumnName("work_order_arrangement_map_id")
                     .HasColumnType("bigint(20) unsigned");
 
                 entity.Property(e => e.WorkOrderId)
