@@ -19,6 +19,7 @@ namespace ViewModels.ControllerModels
             ImageMap = new List<WorkOrderImageMapDTO>();
             WorkOrderInventoryMap = new List<WorkOrderInventoryMapDTO>();
             NotInInventory = new List<NotInInventoryDTO>();
+            Arrangements = new List<AddArrangementRequest>();
         }
         public WorkOrderDTO WorkOrder { get; set; }
 
@@ -27,6 +28,8 @@ namespace ViewModels.ControllerModels
         public List<WorkOrderInventoryMapDTO> WorkOrderInventoryMap { get; set; }
 
         public List<NotInInventoryDTO> NotInInventory { get; set; }
+
+        public List<AddArrangementRequest> Arrangements { get; set; }
     }
 
     /// <summary>

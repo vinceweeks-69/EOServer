@@ -53,6 +53,7 @@ namespace EO.DatabaseContext
         public virtual DbSet<WorkOrderPayment> WorkOrderPayment { get; set; }
         public virtual DbSet<WorkOrderImageMap> WorkOrderImageMap { get; set; }
         public virtual DbSet<WorkOrderInventoryMap> WorkOrderInventoryMap { get; set; }
+        public virtual DbSet<WorkOrderArrangementMap> WorkOrderArrangementMap { get; set; }
         public virtual DbSet<NotInInventory> NotInInventory { get; set; }
         public virtual DbSet<Shipment> Shipment { get; set; }
         public virtual DbSet<ShipmentInventoryMap> ShipmentInventoryMap { get; set; }
@@ -1527,6 +1528,41 @@ namespace EO.DatabaseContext
                     .HasForeignKey(d => d.WorkOrderId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_workorder_inventory");
+            });
+
+            modelBuilder.Entity<WorkOrderArrangementMap>(entity =>
+            {
+                entity.ToTable("work_order_arrangement_map", "eotest");
+
+                //entity.HasIndex(e => e.WorkOrderArrangementMapId)
+                //    .HasName("fk_workorder_image_idx");
+
+                //entity.HasIndex(e => e.WorkOrderId)
+                //    .HasName("fk_workorder_workorder_idx");
+
+                entity.Property(e => e.WorkOrderArrangementMapId)
+                    .HasColumnName("work_order_arrangemet_map_id")
+                    .HasColumnType("bigint(20) unsigned");
+
+                entity.Property(e => e.WorkOrderId)
+                    .HasColumnName("work_order_id")
+                    .HasColumnType("bigint(20) unsigned");
+
+                entity.Property(e => e.ArrangementId)
+                    .HasColumnName("arrangement_id")
+                    .HasColumnType("bigint(20) unsigned");
+
+                //entity.HasOne(d => d.Image)
+                //    .WithMany(p => p.WorkOrderImageMap)
+                //    .HasForeignKey(d => d.ImageId)
+                //    .OnDelete(DeleteBehavior.ClientSetNull)
+                //    .HasConstraintName("fk_workorder_image");
+
+                //entity.HasOne(d => d.WorkOrder)
+                //    .WithMany(p => p.WorkOrderImageMap)
+                //    .HasForeignKey(d => d.WorkOrderId)
+                //    .OnDelete(DeleteBehavior.ClientSetNull)
+                //    .HasConstraintName("fk_workorder_workorder");
             });
 
             modelBuilder.Entity<NotInInventory>(entity =>

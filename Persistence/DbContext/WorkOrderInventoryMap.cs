@@ -14,4 +14,11 @@ namespace EO.DatabaseContext
         public virtual Inventory Inventory { get; set; }
         public virtual WorkOrder WorkOrder { get; set; }
     }
+
+    public partial class WorkOrderArrangementMap
+    {
+        public long WorkOrderArrangementMapId { get; set; }
+        public long WorkOrderId { get; set; }
+        public long ArrangementId { get; set; }
+    }
 }

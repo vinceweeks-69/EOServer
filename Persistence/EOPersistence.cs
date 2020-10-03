@@ -1,6 +1,7 @@
 ﻿using EO.DatabaseContext;
 using EO.ViewModels.DataModels;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using SharedData;
 //using SharedData.ListFilters;
 using System;
@@ -2987,19 +2988,23 @@ namespace EO.Persistence
                             continue;
                         }
 
-                        if (inventoryQuantities.ContainsKey(map.InventoryId))
+                        if ((!String.IsNullOrEmpty(map.NotInInventoryName) && !String.IsNullOrEmpty(map.NotInInventorySize) && map.NotInInventoryPrice > 0) ||
+                            map.InventoryId == 0)
                         {
-                            inventoryQuantities[map.InventoryId] += map.Quantity;
+                            map.InventoryId = 387; //fk inventory_id  "not In Inventory" uses constant
                         }
                         else
                         {
-                            inventoryQuantities.Add(map.InventoryId, map.Quantity);
+                            if (inventoryQuantities.ContainsKey(map.InventoryId))
+                            {
+                                inventoryQuantities[map.InventoryId] += map.Quantity;
+                            }
+                            else
+                            {
+                                inventoryQuantities.Add(map.InventoryId, map.Quantity);
+                            }
                         }
-
-                        if(!String.IsNullOrEmpty(map.NotInInventoryName) && !String.IsNullOrEmpty(map.NotInInventorySize) && map.NotInInventoryPrice > 0)
-                        {
-                            map.InventoryId = 0;
-                        }
+                        
 
                         mapList.Add(new WorkOrderInventoryMap()
                         {
@@ -3051,6 +3056,61 @@ namespace EO.Persistence
 
                         dbContext.WorkOrderImageMap.AddRange(imageMapList);
                     }
+
+                    foreach(AddArrangementRequest ar in request.Arrangements)
+                    {
+                        //save each
+                        Arrangement a = new Arrangement()
+                        {
+                            ArrangementName = ar.Arrangement.ArrangementName,
+                            Container = ar.Arrangement.Container,
+                            CustomerContainerId = ar.Arrangement.CustomerContainerId,
+                            DesignerName = ar.Arrangement.DesignerName,
+                            GiftMessage = ar.Arrangement.GiftMessage,
+                            IsGift = ar.Arrangement.IsGift,
+                            LocationName = ar.Arrangement.LocationName,
+                            ServiceCodeId = ar.Arrangement.ServiceCodeId,
+                            UpdateDate = DateTime.Now,
+                            _180or360 = ar.Arrangement._180or360
+                        };
+
+                        dbContext.Arrangement.Add(a);
+                        dbContext.SaveChanges();
+
+                        //add Inventory
+                        Inventory i = new Inventory()
+                        {
+                            NotifyWhenLowAmount = ar.Inventory.NotifyWhenLowAmount,
+                            InventoryName = ar.Inventory.InventoryName,
+                            InventoryTypeId = ar.Inventory.InventoryTypeId,
+                            ServiceCodeId = ar.Inventory.ServiceCodeId,
+                            Quantity = ar.Inventory.Quantity
+                        };
+                        dbContext.Inventory.Add(i);
+                        dbContext.SaveChanges();
+
+                        //add ArrangementInventoryMap - add new arrangement id
+                        ArrangementInventoryMap aiMap = new ArrangementInventoryMap()
+                        {
+                            ArrangementId = a.ArrangementId,
+                            InventoryId = i.InventoryId
+                        };
+
+                        dbContext.ArrangementInventoryMap.Add(aiMap);
+
+                        //add work orderid and arrangement id to work_order_arrangement_map
+                        WorkOrderArrangementMap woaMap = new WorkOrderArrangementMap()
+                        {
+                            WorkOrderId = w.WorkOrderId,
+                            ArrangementId = a.ArrangementId
+                        };
+
+                        dbContext.WorkOrderArrangementMap.Add(woaMap);
+                        //modify GetWorkOrder to get the above data
+
+                        dbContext.SaveChanges();
+                    }
+
 
                     dbContext.SaveChanges();
                     scope.Complete();
