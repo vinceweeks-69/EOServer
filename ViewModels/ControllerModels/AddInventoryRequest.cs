@@ -105,6 +105,13 @@ namespace ViewModels.ControllerModels
         public AddArrangementRequest()
         {
             ArrangementInventory = new List<ArrangementInventoryDTO>();
+
+            Inventory = new InventoryDTO();
+            Inventory.InventoryName = "Arrangement";
+            Inventory.InventoryTypeId = 5;
+            Inventory.NotifyWhenLowAmount = 0;
+            Inventory.Quantity = 1;
+            Inventory.ServiceCodeId = 365;
         }
 
         public InventoryDTO Inventory { get; set; }

@@ -116,7 +116,7 @@ namespace EO.Persistence
 
         long AddArrangement(AddArrangementRequest arrangementRequest);
 
-        long UpdateArrangement(UpdateArrangementRequest arrangementRequest);
+        long UpdateArrangement(AddArrangementRequest arrangementRequest);
 
         List<InventoryTypeDTO> GetInventoryTypes();
 

@@ -271,7 +271,7 @@ namespace InventoryServiceLayer.Implementation
             return persistence.AddArrangement(arrangementrequest);
         }
 
-        public long UpdateArrangement(UpdateArrangementRequest arrangementrequest)
+        public long UpdateArrangement(AddArrangementRequest arrangementrequest)
         {
             return persistence.UpdateArrangement(arrangementrequest);
         }

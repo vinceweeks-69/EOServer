@@ -112,7 +112,7 @@ namespace InventoryServiceLayer.Interface
 
         long AddArrangement(AddArrangementRequest arrangementRequest);
 
-        long UpdateArrangement(UpdateArrangementRequest arrangementRequest);
+        long UpdateArrangement(AddArrangementRequest arrangementRequest);
 
         ApiResponse AddImage(AddImageRequest request);
 

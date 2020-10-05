@@ -106,6 +106,8 @@ namespace ViewModels.ControllerModels
     {
         public ArrangementDTO Arrangement { get; set; }
 
+        public InventoryDTO Inventory { get; set; }
+
         public List<ArrangementInventoryDTO> ArrangementList { get; set; }
 
         public List<NotInInventoryDTO> NotInInventory { get; set; }
@@ -115,6 +117,8 @@ namespace ViewModels.ControllerModels
         public GetArrangementResponse()
         {
             Arrangement = new ArrangementDTO();
+
+            Inventory = new InventoryDTO();
 
             ArrangementList = new List<ArrangementInventoryDTO>();
 

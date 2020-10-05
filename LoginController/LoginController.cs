@@ -725,7 +725,7 @@ namespace EO.Login_Controller
         }
 
         [HttpPost]
-        public ApiResponse UpdateArrangement(UpdateArrangementRequest request)
+        public ApiResponse UpdateArrangement(AddArrangementRequest request)
         {
             ApiResponse response = new ApiResponse();
             response.Id =  inventoryManager.UpdateArrangement(request);
