@@ -373,7 +373,7 @@ namespace InventoryServiceLayer.Implementation
 
         public long AddWorkOrder(AddWorkOrderRequest workOrderRequest)
         {
-            if (workOrderRequest.WorkOrder.WorkOrderId == 0)
+            if (workOrderRequest.WorkOrder.WorkOrderId <= 0)
             {
                 return persistence.AddWorkOrder(workOrderRequest);
             }

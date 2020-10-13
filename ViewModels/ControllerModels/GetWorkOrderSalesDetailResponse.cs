@@ -18,7 +18,7 @@ namespace ViewModels.ControllerModels
 
         public decimal DiscountAmount { get; set; }
 
-        public List<WorkOrderInventoryItemDTO> WorkOrderItems { get; set; }
+        public List<WorkOrderInventoryMapDTO> WorkOrderItems { get; set; }
 
         public List<NotInInventoryDTO> NotInInventory { get; set; }
 
@@ -26,11 +26,11 @@ namespace ViewModels.ControllerModels
         {
             DiscountType = 0;
             DiscountAmount = 0.0M;
-            WorkOrderItems = new List<WorkOrderInventoryItemDTO>();
+            WorkOrderItems = new List<WorkOrderInventoryMapDTO>();
             NotInInventory = new List<NotInInventoryDTO>();
         }
 
-        public GetWorkOrderSalesDetailRequest(List<WorkOrderInventoryItemDTO> workOrderItems, int discountType, decimal discountAmount)
+        public GetWorkOrderSalesDetailRequest(List<WorkOrderInventoryMapDTO> workOrderItems, int discountType, decimal discountAmount)
         {
             DiscountType = discountType;
             DiscountAmount = discountAmount;
@@ -38,7 +38,7 @@ namespace ViewModels.ControllerModels
             NotInInventory = new List<NotInInventoryDTO>();
         }
 
-        public GetWorkOrderSalesDetailRequest(List<WorkOrderInventoryItemDTO> workOrderItems, List<NotInInventoryDTO> notInInventory,  int discountType, decimal discountAmount)
+        public GetWorkOrderSalesDetailRequest(List<WorkOrderInventoryMapDTO> workOrderItems, List<NotInInventoryDTO> notInInventory,  int discountType, decimal discountAmount)
         {
             DiscountType = discountType;
             DiscountAmount = discountAmount;

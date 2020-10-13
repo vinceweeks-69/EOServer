@@ -1162,6 +1162,8 @@ namespace EO.Persistence
 
                     if (arrangement != null)
                     {
+                        arrangement_id = arrangement.ArrangementId;
+
                         arrangement.ArrangementName = arrangementRequest.Arrangement.ArrangementName;
                         arrangement.DesignerName = arrangementRequest.Arrangement.DesignerName;
                         arrangement._180or360 = arrangementRequest.Arrangement._180or360;
@@ -1171,54 +1173,42 @@ namespace EO.Persistence
                         arrangement.IsGift = arrangementRequest.Arrangement.IsGift;
                         arrangement.GiftMessage = arrangementRequest.Arrangement.GiftMessage;
 
+                        List<long> deleteOriginalIds = new List<long>();
+
                         List<ArrangementInventoryInventoryMap> inventoryMapOriginal =
                             dbContext.ArrangementInventoryInventoryMap.Where(a => a.ArrangementId == arrangementRequest.Arrangement.ArrangementId).ToList();
 
-                        List<long> originalInventoryIds = inventoryMapOriginal.Select(a => a.InventoryId).ToList();
+                        List<long> requestInventoryIds = new List<long>();
 
-                        List<ArrangementInventoryInventoryMap> inventoryMapEdited =
-                            dbContext.ArrangementInventoryInventoryMap.Where(a => a.ArrangementId == arrangementRequest.Arrangement.ArrangementId &&
-                            modifiedInventoryIds.Contains(a.InventoryId)).ToList();
-
-                        List<long> deleteOriginalIds = new List<long>();
-
-                        //compare the two lists 
-                        foreach (ArrangementInventoryInventoryMap orig in inventoryMapOriginal)
+                        foreach(ArrangementInventoryDTO x in arrangementRequest.ArrangementInventory)
                         {
-                            if (!modifiedInventoryIds.Contains(orig.InventoryId))
+                            if(x.ArrangementInventoryInventoryMapId == 0)
                             {
-                                //delete
-                                deleteOriginalIds.Add(orig.InventoryId);
-                            }
-                        }
-
-                        foreach (long del in deleteOriginalIds)
-                        {
-                            ArrangementInventoryInventoryMap aiim = inventoryMapOriginal.Where(a => a.InventoryId == del).FirstOrDefault();
-                            inventoryMapOriginal.Remove(aiim);
-                            originalInventoryIds.Remove(del);
-                        }
-
-                        foreach (ArrangementInventoryInventoryMap edited in inventoryMapEdited)
-                        {
-                            if (originalInventoryIds.Contains(edited.InventoryId))
-                            {
-                                //present in original, update
-                                ArrangementInventoryInventoryMap aiim = inventoryMapOriginal.Where(a => a.InventoryId == edited.InventoryId).FirstOrDefault();
-                                aiim.Quantity = arrangementRequest.ArrangementInventory.Where(b => b.InventoryId == edited.InventoryId).Select(c => c.Quantity).First();
-                            }
-                            else
-                            {
-                                //add new item
-                                ArrangementInventoryDTO dto = arrangementRequest.ArrangementInventory.Where(a => a.InventoryId == edited.InventoryId).FirstOrDefault();
                                 ArrangementInventoryInventoryMap aiim = new ArrangementInventoryInventoryMap()
                                 {
-                                    ArrangementId = edited.ArrangementId,
-                                    InventoryId = edited.InventoryId,
-                                    Quantity = dto.Quantity
+                                    ArrangementId = arrangement_id,
+                                    InventoryId = x.InventoryId,
+                                    Quantity = x.Quantity
                                 };
 
                                 dbContext.ArrangementInventoryInventoryMap.Add(aiim);
+                            }
+                            else
+                            {
+                                requestInventoryIds.Add(x.ArrangementInventoryInventoryMapId);
+
+                                ArrangementInventoryInventoryMap m =
+                                    inventoryMapOriginal.Where(a => a.ArrangementInventoryInventoryMapId == x.ArrangementInventoryInventoryMapId).First();
+                                m.Quantity = x.Quantity;
+                            }
+                        }
+
+                        //deletion is possible - if there's anything in the request that isn't present in the "original" list
+                        foreach(ArrangementInventoryInventoryMap aiim in inventoryMapOriginal)
+                        {
+                            if(!requestInventoryIds.Contains(aiim.ArrangementInventoryInventoryMapId))
+                            {
+                                dbContext.ArrangementInventoryInventoryMap.Remove(inventoryMapOriginal.Where(a => a.ArrangementInventoryInventoryMapId == aiim.ArrangementInventoryInventoryMapId).First());
                             }
                         }
 
@@ -1537,7 +1527,7 @@ namespace EO.Persistence
         {
             List<WorkOrderResponse> workOrderList = new List<WorkOrderResponse>();
 
-            //get them all - won'r do any work until you execute ToList()
+            //get them all - won't do any work until you execute ToList()
             var query = dbContext.WorkOrder.Where(a => a.WorkOrderId > 0);
 
             if (filter.FromDate != null && filter.ToDate != null && filter.FromDate > DateTime.MinValue && filter.ToDate > DateTime.MinValue)
@@ -1642,6 +1632,13 @@ namespace EO.Persistence
                     });
                 });
 
+                List<GetArrangementResponse> arrangements = new List<GetArrangementResponse>();
+
+                dbContext.WorkOrderArrangementMap.Where(a => a.WorkOrderId == w.WorkOrderId).ToList().ForEach(arrangement =>
+                {
+                    arrangements.Add(GetArrangement(arrangement.ArrangementId));
+                });
+                
                 List<WorkOrderImageMapDTO> imageMap = new List<WorkOrderImageMapDTO>();
 
                 dbContext.WorkOrderImageMap.Where(a => a.WorkOrderId == wo.WorkOrderId).ToList().ForEach(item =>
@@ -1656,9 +1653,10 @@ namespace EO.Persistence
 
                 WorkOrderResponse r = new WorkOrderResponse();
                 r.WorkOrder = w;
-                r.ImageMap = imageMap;
+                r.Arrangements = arrangements;
                 r.WorkOrderList = inventoryList;
                 r.NotInInventory = notInInventory;
+                r.ImageMap = imageMap;
 
                 workOrderList.Add(r);
             });
@@ -2423,6 +2421,12 @@ namespace EO.Persistence
                         dbContext.NotInInventory.Where(b => b.ArrangementId == arrangementId).ToList();
 
                     dbContext.NotInInventory.RemoveRange();
+
+                    if(dbContext.WorkOrderArrangementMap.Where(b => b.ArrangementId == arrangementId).Any())
+                    {
+                        WorkOrderArrangementMap woam = dbContext.WorkOrderArrangementMap.Where(b => b.ArrangementId == arrangementId).First();
+                        dbContext.WorkOrderArrangementMap.Remove(woam);
+                    }
 
                     Arrangement a = dbContext.Arrangement.Where(b => b.ArrangementId == arrangementId).First();
                     dbContext.Arrangement.Remove(a);
@@ -3220,6 +3224,7 @@ namespace EO.Persistence
                             {
                                ArrangementId = a.ArrangementId,
                                InventoryId = aid.InventoryId,
+                               InventoryTypeId = aid.InventoryTypeId,
                                Quantity = aid.Quantity
                             };
 
@@ -3358,86 +3363,73 @@ namespace EO.Persistence
                         }
 
                         dbContext.WorkOrderInventoryMap.AddRange(mapList);
-                    }
 
-                    List<long> arrangementIds = dbContext.WorkOrderArrangementMap
-                        .Where(a => a.WorkOrderId == request.WorkOrder.WorkOrderId).Select(b => b.ArrangementId).ToList();
+                        List<NotInInventory> update = dbContext.NotInInventory.Where(a => a.WorkOrderId == request.WorkOrder.WorkOrderId).ToList();
 
-                    List<WorkOrderArrangementMap> woam = dbContext.WorkOrderArrangementMap
-                        .Where(a => arrangementIds.Contains(a.ArrangementId)).ToList();
+                        dbContext.NotInInventory.RemoveRange(update);
 
-                    dbContext.WorkOrderArrangementMap.RemoveRange(woam);
+                        dbContext.SaveChanges();
 
-                    foreach (long arrangementId in arrangementIds)
-                    {
-                        List<ArrangementImageMap> imageMaps =
-                            dbContext.ArrangementImageMap.Where(b => b.ArrangmentId == arrangementId).ToList();
-
-                        dbContext.ArrangementImageMap.RemoveRange(imageMaps);
-
-                        List<ArrangementInventoryInventoryMap> invInvMaps =
-                            dbContext.ArrangementInventoryInventoryMap.Where(b => b.ArrangementId == arrangementId).ToList();
-
-                        dbContext.ArrangementInventoryInventoryMap.RemoveRange(invInvMaps);
-
-                        List<ArrangementInventoryMap> invMaps =
-                            dbContext.ArrangementInventoryMap.Where(b => b.ArrangementId == arrangementId).ToList();
-
-                        dbContext.ArrangementInventoryMap.RemoveRange(invMaps);
-
-                        List<NotInInventory> notInInventory =
-                            dbContext.NotInInventory.Where(b => b.ArrangementId == arrangementId).ToList();
-
-                        dbContext.NotInInventory.RemoveRange();
-
-                        Arrangement a = dbContext.Arrangement.Where(b => b.ArrangementId == arrangementId).First();
-                        dbContext.Arrangement.Remove(a);
-                    }
-
-                    
-
-                    foreach (AddArrangementRequest aaRequest in request.Arrangements)
-                    {
-                        long newOrUpdatedId = 0;
-                        if (aaRequest.Arrangement.ArrangementId == 0)
+                        update.Clear();
+                        foreach (NotInInventoryDTO d in request.NotInInventory)
                         {
-                            newOrUpdatedId = AddArrangement(aaRequest);
-
-                            WorkOrderArrangementMap woam2 = new WorkOrderArrangementMap()
+                            update.Add(new NotInInventory()
                             {
-                                WorkOrderId = updatedWorkOrderId,
-                                ArrangementId = newOrUpdatedId
-                            };
+                                WorkOrderId = d.WorkOrderId,
+                                ArrangementId = d.ArrangementId,
+                                NotInInventoryName = d.NotInInventoryName,
+                                NotInInventoryPrice = d.NotInInventoryPrice,
+                                NotInInventoryQuantity = d.NotInInventoryQuantity,
+                                NotInInventorySize = d.NotInInventorySize
+                            });
                         }
-                        else
-                        {
-                            newOrUpdatedId = UpdateArrangement(aaRequest);
-                        }
 
-                        
-                    }
+                        dbContext.NotInInventory.AddRange(update);
 
-                    List<NotInInventory> update = dbContext.NotInInventory.Where(a => a.WorkOrderId == request.WorkOrder.WorkOrderId).ToList();
+                        List<long> deleteArrangementIds = new List<long>();
 
-                    dbContext.NotInInventory.RemoveRange(update);
+                        List<long> requestArrangementIds = request.Arrangements.Select(a => a.Arrangement.ArrangementId).ToList();
 
-                    dbContext.SaveChanges();
-
-                    update.Clear();
-                    foreach(NotInInventoryDTO d in request.NotInInventory)
-                    {
-                        update.Add(new NotInInventory()
-                        {
-                            WorkOrderId = d.WorkOrderId,
-                            ArrangementId = d.ArrangementId,
-                            NotInInventoryName = d.NotInInventoryName,
-                            NotInInventoryPrice = d.NotInInventoryPrice,
-                            NotInInventoryQuantity = d.NotInInventoryQuantity,
-                            NotInInventorySize = d.NotInInventorySize
+                        dbContext.WorkOrderArrangementMap.Where(a => a.WorkOrderId == request.WorkOrder.WorkOrderId).Select(b => b.ArrangementId).ToList().ForEach( arrangementId => 
+                        { 
+                            if(!requestArrangementIds.Contains(arrangementId))
+                            {
+                                deleteArrangementIds.Add(arrangementId);
+                            }
                         });
-                    }
 
-                    dbContext.NotInInventory.AddRange(update);
+                        if(deleteArrangementIds.Count > 0)
+                        {
+                            List<WorkOrderArrangementMap> woam = dbContext.WorkOrderArrangementMap.Where(a => deleteArrangementIds.Contains(a.ArrangementId)).ToList();
+                            dbContext.WorkOrderArrangementMap.RemoveRange(woam);
+
+                            foreach(long deleteId in deleteArrangementIds)
+                            {
+                                DeleteArrangement(deleteId);
+                            }
+                        }
+
+                        foreach (AddArrangementRequest aaRequest in request.Arrangements)
+                        {
+                            long newOrUpdatedId = 0;
+                            if (aaRequest.Arrangement.ArrangementId == 0)
+                            {
+                                newOrUpdatedId = AddArrangement(aaRequest);
+
+                                WorkOrderArrangementMap woam2 = new WorkOrderArrangementMap()
+                                {
+                                    WorkOrderId = updatedWorkOrderId,
+                                    ArrangementId = newOrUpdatedId
+                                };
+
+                                dbContext.WorkOrderArrangementMap.Add(woam2);
+                            }
+                            else
+                            {
+                                newOrUpdatedId = UpdateArrangement(aaRequest);
+                            }
+                        }
+                    }
 
                     if (request.ImageMap != null && request.ImageMap.Count > 0)
                     {
@@ -4723,7 +4715,7 @@ namespace EO.Persistence
                 decimal subTotal = 0;
                 decimal tax = 0;
 
-                foreach (WorkOrderInventoryItemDTO workOrderItem in request.WorkOrderItems)
+                foreach (WorkOrderInventoryMapDTO workOrderItem in request.WorkOrderItems)
                 {
                     Inventory i = dbContext.Inventory.Where(a => a.InventoryId == workOrderItem.InventoryId).FirstOrDefault();
 
