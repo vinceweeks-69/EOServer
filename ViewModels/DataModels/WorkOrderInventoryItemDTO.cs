@@ -5,12 +5,13 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace ViewModels.DataModels
 {
     [Serializable]
     [Preserve(AllMembers = true)]
-    public class WorkOrderInventoryItemDTO
+    public class WorkOrderInventoryItemDTO : INotifyPropertyChanged
     {
         public WorkOrderInventoryItemDTO()
         {
@@ -56,6 +57,41 @@ namespace ViewModels.DataModels
         public string NotInInventorySize { get; set; }
 
         public decimal NotInInventoryPrice { get; set; }
+
+        private Visibility visibility { get; set; }
+
+        public Visibility ItemVisibility
+        {
+            set
+            {
+                visibility = value;
+                OnPropertyChanged(nameof(ItemVisibility))
+;
+            }
+            get
+            {
+                return Quantity == 0 ? Visibility.Hidden : Visibility.Visible;
+            }
+        }
+
+        private bool shouldShow;
+        public bool ShouldShow
+        {
+            set
+            {
+                shouldShow = value;
+                OnPropertyChanged(nameof(ShouldShow));
+            }
+            get
+            {
+                return Quantity == 0 ? false : true;
+            }
+        }
+
+        //public Color BackgroundColor()
+        //{
+        //    return GroupId == 0 ? Color.White : Color.LightGray;
+        //}
 
         protected void OnPropertyChanged(string name)
         {

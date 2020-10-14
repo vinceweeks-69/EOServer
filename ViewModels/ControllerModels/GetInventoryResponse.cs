@@ -108,7 +108,7 @@ namespace ViewModels.ControllerModels
 
         public InventoryDTO Inventory { get; set; }
 
-        public List<ArrangementInventoryDTO> ArrangementList { get; set; }
+        public List<ArrangementInventoryItemDTO> ArrangementList { get; set; }
 
         public List<NotInInventoryDTO> NotInInventory { get; set; }
 
@@ -120,7 +120,7 @@ namespace ViewModels.ControllerModels
 
             Inventory = new InventoryDTO();
 
-            ArrangementList = new List<ArrangementInventoryDTO>();
+            ArrangementList = new List<ArrangementInventoryItemDTO>();
 
             NotInInventory = new List<NotInInventoryDTO>();
 

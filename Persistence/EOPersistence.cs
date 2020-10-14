@@ -1450,8 +1450,8 @@ namespace EO.Persistence
                             WorkOrderInventoryMapId = map.WorkOrderInventoryMapId,
                             WorkOrderId = map.WorkOrderId,
                             InventoryId = map.InventoryId,
-                        //InventoryName = map.Inventory.InventoryName,
-                        Quantity = map.Quantity,
+                            InventoryName = dbContext.Inventory.Where(b => b.InventoryId == map.InventoryId).Select(c => c.InventoryName).First(),
+                            Quantity = map.Quantity,
                             GroupId = map.GroupId,
                         });
                     }
@@ -1601,7 +1601,7 @@ namespace EO.Persistence
                             WorkOrderInventoryMapId = map.WorkOrderInventoryMapId,
                             WorkOrderId = map.WorkOrderId,
                             InventoryId = map.InventoryId,
-                            //InventoryName = map.Inventory.InventoryName,
+                            InventoryName = dbContext.Inventory.Where(b => b.InventoryId == map.InventoryId).Select(c => c.InventoryName).First(),
                             Quantity = map.Quantity,
                             GroupId = map.GroupId,
                         });
@@ -2226,10 +2226,9 @@ namespace EO.Persistence
                 {
                     string size = GetInventorySize(inventoryList.Where(b => b.InventoryId == index.InventoryId).FirstOrDefault());
 
-                    response.ArrangementList.Add(new ArrangementInventoryDTO()
+                    response.ArrangementList.Add(new ArrangementInventoryItemDTO()
                     {
-                        ArrangementInventoryInventoryMapId = index.ArrangementInventoryInventoryMapId,
-                        ArrangementInventoryName = inventoryList.Where(b => b.InventoryId == index.InventoryId).Select(c => c.InventoryName).FirstOrDefault(),
+                        InventoryName = inventoryList.Where(b => b.InventoryId == index.InventoryId).Select(c => c.InventoryName).FirstOrDefault(),
                         ArrangementId = a.ArrangementId,
                         InventoryId = index.InventoryId,
                         InventoryTypeId = index.InventoryTypeId,
@@ -4715,7 +4714,7 @@ namespace EO.Persistence
                 decimal subTotal = 0;
                 decimal tax = 0;
 
-                foreach (WorkOrderInventoryMapDTO workOrderItem in request.WorkOrderItems)
+                foreach (WorkOrderInventoryItemDTO workOrderItem in request.WorkOrderItems)
                 {
                     Inventory i = dbContext.Inventory.Where(a => a.InventoryId == workOrderItem.InventoryId).FirstOrDefault();
 

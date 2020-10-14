@@ -38,6 +38,8 @@ namespace ViewModels.DataModels
 
         public long ImageId { get; set; }
 
+        public string Size { get; set; }
+
         protected void OnPropertyChanged(string name)
         {
             PropertyChangedEventHandler handler = PropertyChanged;
