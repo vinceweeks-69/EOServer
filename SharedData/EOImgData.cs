@@ -1,17 +1,12 @@
-﻿using Android.Runtime;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-
-namespace ViewModels.DataModels
+namespace SharedData
 {
-
     [Serializable]
-    [Preserve(AllMembers = true)]
     public class EOImgData
     {
         public EOImgData()

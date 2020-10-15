@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="EmailHelpers.cs" />
     <Compile Include="Enums.cs" />
+    <Compile Include="EOImgData.cs" />
     <Compile Include="FontAwesome.cs" />
     <Compile Include="ListFilters.cs" />
     <Compile Include="PaymentHelpers.cs" />

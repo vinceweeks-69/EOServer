@@ -97,7 +97,6 @@
     <Compile Include="DataModels\ContainerInventoryDTO.cs" />
     <Compile Include="DataModels\ContainerNameDTO.cs" />
     <Compile Include="DataModels\CustomerContainerDTO.cs" />
-    <Compile Include="DataModels\EOImgData.cs" />
     <Compile Include="DataModels\EOMailMessage.cs" />
     <Compile Include="DataModels\ErrorLogDTO.cs" />
     <Compile Include="DataModels\FoliageDTO.cs" />

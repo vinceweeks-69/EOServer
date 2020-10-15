@@ -11,7 +11,7 @@ namespace ViewModels.DataModels
 {
     [Serializable]
     [Preserve(AllMembers = true)]
-    public class WorkOrderInventoryMapDTO : INotifyPropertyChanged
+    public class WorkOrderInventoryMapDTO 
     {
         public long WorkOrderInventoryMapId { get; set; }
 
@@ -32,51 +32,5 @@ namespace ViewModels.DataModels
         public string NotInInventorySize { get; set; }
 
         public decimal NotInInventoryPrice { get; set; }
-
-        private Visibility visibility { get; set; }
-
-        public Visibility ItemVisibility
-        {
-            set
-            {
-                visibility = value;
-                OnPropertyChanged(nameof(ItemVisibility))
-;
-            }
-            get
-            {
-                return Quantity == 0 ? Visibility.Hidden : Visibility.Visible;
-            }
-        }
-
-        private bool shouldShow;
-        public bool ShouldShow
-        {
-            set
-            {
-                shouldShow = value;
-                OnPropertyChanged(nameof(ShouldShow));
-            }
-            get
-            {
-                return Quantity == 0 ? false : true;
-            }
-        }
-
-        //public Color BackgroundColor()
-        //{
-        //    return GroupId == 0 ? Color.White : Color.LightGray;
-        //}
-
-        protected void OnPropertyChanged(string name)
-        {
-            PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null)
-            {
-                handler(this, new PropertyChangedEventArgs(name));
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
     }
 }
