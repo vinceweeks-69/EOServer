@@ -9,14 +9,16 @@ namespace ViewModels.ControllerModels
 {
     [Serializable]
     [Preserve(AllMembers = true)]
-    public class PaymentResponse
+    public class PaymentResponse : ApiResponse
     {
         public PaymentResponse()
         {
             success = false;
+            ccConfirm = String.Empty;
             StripeChargeId = String.Empty;
         }
         public string StripeChargeId { get; set; }
+        public string ccConfirm { get; set; }
         public bool success { get; set; }
     }
 }

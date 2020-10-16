@@ -188,7 +188,7 @@ namespace InventoryServiceLayer.Interface
 
         List<string> GetSizeByInventoryType(long inventoryTypeId);
 
-        GetWorkOrderSalesDetailResponse GetWorkOrderDetail(GetWorkOrderSalesDetailRequest request);
+        GetWorkOrderSalesDetailResponse GetWorkOrderDetail(WorkOrderResponse request);
 
         void LogError(ErrorLogRequest request);
     }

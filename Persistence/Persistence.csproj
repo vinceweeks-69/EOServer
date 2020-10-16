@@ -204,6 +204,7 @@
     <Compile Include="DbContext\WorkOrderInventoryMap.cs" />
     <Compile Include="DbContext\WorkOrderPayment.cs" />
     <Compile Include="EOPersistence.cs" />
+    <Compile Include="Helpers\PriceAndTax.cs" />
     <Compile Include="IEOPersistence.cs" />
     <Compile Include="PersistenceModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -3,6 +3,7 @@ using EO.ViewModels.DataModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Org.BouncyCastle.Asn1.Ocsp;
+using Persistence.Helpers;
 using SharedData;
 //using SharedData.ListFilters;
 using System;
@@ -2908,8 +2909,12 @@ namespace EO.Persistence
                     };
 
                     dbContext.WorkOrderPayment.Add(w);
-                    
+
+                    WorkOrder wo = dbContext.WorkOrder.Where(a => a.WorkOrderId == workOrderPayment.WorkOrderId).First();
+                    wo.Paid = true;
+
                     dbContext.SaveChanges();
+
                     scope.Complete();
                     newId = w.WorkOrderPaymentId;
                 }
@@ -4705,68 +4710,83 @@ namespace EO.Persistence
             return sizes;
         }
 
-        public GetWorkOrderSalesDetailResponse GetWorkOrderDetail(GetWorkOrderSalesDetailRequest request)
+        private PriceAndTax GetPriceofInventoryItem(long inventoryId)
+        {
+            Inventory i = dbContext.Inventory.Where(a => a.InventoryId == inventoryId).FirstOrDefault();
+
+            decimal price = 0;
+            decimal tax = 0;
+
+            if (i != null && i.InventoryId > 0)
+            {
+                ServiceCode code = dbContext.ServiceCode.Where(a => a.ServiceCodeId == i.ServiceCodeId).FirstOrDefault();
+
+                if (code != null && code.Price.HasValue)
+                {
+                    price = code.Price.Value;
+                }
+
+                if (code.Taxable)
+                {
+                    tax = price * 0.06M;
+                }
+            }
+
+            return new PriceAndTax(price, tax);
+        }
+
+        public GetWorkOrderSalesDetailResponse GetWorkOrderDetail(WorkOrderResponse request)
         {
             GetWorkOrderSalesDetailResponse response = new GetWorkOrderSalesDetailResponse();
 
             try
             {
-                decimal subTotal = 0;
-                decimal tax = 0;
-
-                foreach (WorkOrderInventoryItemDTO workOrderItem in request.WorkOrderItems)
+                decimal subTotal = 0.0M;
+                decimal tax = 0.0M;
+                foreach (WorkOrderInventoryMapDTO workOrderItem in request.WorkOrderList)
                 {
                     Inventory i = dbContext.Inventory.Where(a => a.InventoryId == workOrderItem.InventoryId).FirstOrDefault();
 
-                    subTotal = 0;
-                    tax = 0;
-
                     if (i != null && i.InventoryId > 0)
                     {
-                        ServiceCode code = dbContext.ServiceCode.Where(a => a.ServiceCodeId == i.ServiceCodeId).FirstOrDefault();
+                        PriceAndTax priceAndTax = GetPriceofInventoryItem(i.InventoryId);
 
-                        if (code != null && code.Price.HasValue)
-                        {
-                            subTotal = code.Price.Value * workOrderItem.Quantity;
-                        }
+                        response.SubTotal += priceAndTax.Price * workOrderItem.Quantity;
 
-                        if(code.Taxable)
-                        {
-                            tax = subTotal * 0.06M;
-                        }
+                        response.Tax += priceAndTax.Tax;
                     }
 
-                    response.SubTotal += subTotal;
-
-                    response.Tax += tax;
                 }
 
                 foreach(NotInInventoryDTO notInInventory in request.NotInInventory)
                 {
-                    subTotal = notInInventory.NotInInventoryPrice * notInInventory.NotInInventoryQuantity;
+                    subTotal += notInInventory.NotInInventoryPrice * notInInventory.NotInInventoryQuantity;
                     tax = subTotal * 0.06M;
                     response.SubTotal += subTotal;
                     response.Tax += tax;
                 }
 
-                response.Total = response.SubTotal + response.Tax;
-
-                decimal discountAmount = 0.0M;
-
-                if (request.DiscountType > 0 &&  request.DiscountAmount > 0 && response.SubTotal > 0)
+                foreach(GetArrangementResponse  a in request.Arrangements)
                 {
-                    if (request.DiscountType == 1)   //percent
+                    foreach(ArrangementInventoryItemDTO  b in a.ArrangementList)
                     {
-                        discountAmount = request.DiscountAmount / 100;
-                        discountAmount = response.SubTotal * discountAmount;
-                    }
-                    else if (request.DiscountType == 2)  // manually entered ammount
-                    {
-                        discountAmount = request.DiscountAmount;
+                        PriceAndTax priceAndTax = GetPriceofInventoryItem(b.InventoryId);
+
+                        response.SubTotal += priceAndTax.Price * b.Quantity;
+
+                        response.Tax += priceAndTax.Tax;
                     }
 
-                    response.Total -= discountAmount;
+                    foreach(NotInInventoryDTO notInInventory in a.NotInInventory)
+                    {
+                        subTotal += notInInventory.NotInInventoryPrice * notInInventory.NotInInventoryQuantity;
+                        tax = subTotal * 0.06M;
+                        response.SubTotal += subTotal;
+                        response.Tax += tax;
+                    }
                 }
+
+                response.Total = response.SubTotal + response.Tax;
             }
             catch(Exception ex)
             {

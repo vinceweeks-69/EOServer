@@ -472,7 +472,7 @@ namespace InventoryServiceLayer.Implementation
             return persistence.GetSizesByInventoryType(inventoryTypeId);
         }
 
-        public GetWorkOrderSalesDetailResponse GetWorkOrderDetail(GetWorkOrderSalesDetailRequest request)
+        public GetWorkOrderSalesDetailResponse GetWorkOrderDetail(WorkOrderResponse request)
         {
             return persistence.GetWorkOrderDetail(request);
         }

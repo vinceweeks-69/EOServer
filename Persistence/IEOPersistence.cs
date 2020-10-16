@@ -210,7 +210,7 @@ namespace EO.Persistence
 
         List<string> GetSizesByInventoryType(long inventoryTypeId);
 
-        GetWorkOrderSalesDetailResponse GetWorkOrderDetail(GetWorkOrderSalesDetailRequest request);
+        GetWorkOrderSalesDetailResponse GetWorkOrderDetail(WorkOrderResponse request);
 
         void LogError(ErrorLogRequest request);
     }

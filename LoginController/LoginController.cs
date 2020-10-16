@@ -79,7 +79,7 @@ namespace EO.Login_Controller
 
                 var options = new TokenCreateOptions
                 {
-                    Card = new CreditCardOptions
+                    Card = new TokenCardOptions
                     {
                         Number = ci.cardNumber,
                         ExpYear = dt.Year,
@@ -131,7 +131,7 @@ namespace EO.Login_Controller
             {
                 if(ex is StripeException)
                 {
-                    string stripeErrorMsg = HandleStripeException(ex as StripeException);
+                    response.Messages.Add("Stripe", new List<string>() { HandleStripeException(ex as StripeException) });
                 }
             }
 
@@ -1007,7 +1007,7 @@ namespace EO.Login_Controller
         }
 
         [HttpPost]
-        public GetWorkOrderSalesDetailResponse GetWorkOrderDetail(GetWorkOrderSalesDetailRequest request)
+        public GetWorkOrderSalesDetailResponse GetWorkOrderDetail(WorkOrderResponse request)
         {
             return inventoryManager.GetWorkOrderDetail(request);
         }
