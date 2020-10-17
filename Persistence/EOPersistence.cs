@@ -3243,7 +3243,6 @@ namespace EO.Persistence
                             NotInInventory nid = new NotInInventory()
                             {
                                 ArrangementId = a.ArrangementId,
-                                NotInInventoryId = niid.NotInInventoryId,
                                 NotInInventoryName = niid.NotInInventoryName,
                                 NotInInventoryPrice = niid.NotInInventoryPrice,
                                 NotInInventoryQuantity = niid.NotInInventoryQuantity,

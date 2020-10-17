@@ -51,27 +51,54 @@ namespace SharedData
 
             receiptHtml =
                 "<div>" +
+                    "<h2><center>Elegant Orchids </center></h2> <br>" +
+                    "<center> 5185 Conklin Drive Delray Beach fl 33484 </center> <br><br>" +
                     "Order Placed: " + workOrder.WorkOrder.CreateDate.ToShortDateString() + "<br>" +
                     "Order # " + workOrder.WorkOrder.WorkOrderId.ToString() + "<br>" +
                     "Order Total: " + String.Format("Order Total: {0:C}", payment.WorkOrderPaymentAmount) + "<br>" + "<br>" +
                     "<div style='border:1px; solid; black'>" +
-                        "<div style='border:1px solid; black; text-align: center'>" +
-                            "<div style='display: inline-block'> Order Detail</div>";
+                         "<div style='display: inline-block'> Order Detail</div>" +
+                         "<div style='border:1px solid; black; text-align: center'>";
 
-            foreach(WorkOrderInventoryMapDTO inventoryMap in workOrder.WorkOrderList)
+
+            receiptHtml += "<div style = 'display: inline-block'>";
+
+            foreach (WorkOrderInventoryMapDTO inventoryMap in workOrder.WorkOrderList)
             {
                 receiptHtml += inventoryMap.Quantity.ToString() + " " + inventoryMap.InventoryName + "  " + inventoryMap.Size + "<br>";
             }
 
-            receiptHtml +=
-                        "</div>" +
-                         "<div style='border:1px solid; black;'>" +
-                            "<div>" +
-                            "<div>" +
-                        "<div>" +
-                    "</div>";
+            foreach (NotInInventoryDTO notInInventory in workOrder.NotInInventory)
+            {
+                receiptHtml += notInInventory.NotInInventoryQuantity.ToString() + " " + notInInventory.NotInInventoryName + "  " + notInInventory.NotInInventorySize + "<br>";
+            }
 
-            if(workOrder.WorkOrder.DeliveryType == 2)
+            foreach (GetArrangementResponse a in workOrder.Arrangements)
+            {
+                receiptHtml += "<br> Arrangement <br>";
+                foreach (ArrangementInventoryItemDTO b in a.ArrangementList)
+                {
+                    receiptHtml += b.Quantity.ToString() + " " + b.InventoryName + "  " + b.Size + "<br>";
+                }
+
+                foreach (NotInInventoryDTO notInInventory in a.NotInInventory)
+                {
+                    receiptHtml += notInInventory.NotInInventoryQuantity.ToString() + " " + notInInventory.NotInInventoryName + "  " + notInInventory.NotInInventorySize + "<br>";
+                }
+
+                receiptHtml += "<br>";
+            }
+
+            receiptHtml += "</div>";
+
+            receiptHtml +=
+
+                        "<div style='border:1px solid; black;'>" +
+                            "<div>" + "</div>" +
+                            "<div>" + "</div>" +
+                        "</div> <br>";
+
+            if (workOrder.WorkOrder.DeliveryType == 2)
             {
                 receiptHtml += "<br>" +
                  "<div style='border:1px; solid; black'>" +
@@ -79,10 +106,10 @@ namespace SharedData
                         "<div style='display: inline-block'> Delivery Detail</div>" +
                     "</div>" +
                     "<div style='border:1px solid; black;'>" +
-                        "<div>" +
-                        "</div>" +
+                        "<div>" + "</div>" +
+                        "<div>" + "</div>" +
                     "</div>" +
-                "</div>"; 
+                "</div> <br>";
             }
 
             receiptHtml += "<br>" +
@@ -91,12 +118,12 @@ namespace SharedData
                         "<div style='display: inline-block'> Payment Detail</div>" +
                     "</div>" +
                     "<div style='border:1px solid; black;'>" +
-                        "<div>" +
-                        "<div>" +
+                         "<div>" + "</div>" +
+                         "<div>" + "</div>" +
                     "</div>" +
                  "</div>";
 
-            if(payment.WorkOrderPaymentType == 2)
+            if (payment.WorkOrderPaymentType == 2)
             {
                 receiptHtml +=
                  "<div style='border:1px; solid; black'>" +
@@ -104,13 +131,15 @@ namespace SharedData
                         "<div style='display: inline-block'> Credit Card Payment Detail</div>" +
                     "</div>" +
                     "<div style='border:1px solid; black;'>" +
-                        "<div>" +
-                        "<div>" +
+                        "<div>" + "</div>" +
+                        "<div>" + "</div>" +
                     "</div>" +
                  "</div>";
             }
 
             receiptHtml += "</div>";
+
+            receiptHtml += "<h2><center> Thank you for your business </center></h2>";
 
             return receiptHtml;
         }
