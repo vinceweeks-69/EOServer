@@ -11,7 +11,7 @@ namespace ViewModels.DataModels
 {
     [Serializable]
     [Preserve(AllMembers = true)]
-    public class WorkOrderInventoryItemDTO 
+    public class WorkOrderInventoryItemDTO  : INotifyPropertyChanged
     {
         public WorkOrderInventoryItemDTO()
         {
@@ -44,7 +44,17 @@ namespace ViewModels.DataModels
 
         public string InventoryName { get; set; }
 
-        public int Quantity { get; set; }
+        public long InventoryTypeId { get; set; }
+
+        int quantity;
+        public int Quantity
+        {
+            get { return quantity; }
+            set {
+                quantity = value;
+                OnPropertyChanged(nameof(Quantity)); quantity = value; 
+            }
+        }
 
         public long ImageId { get; set; }
 
@@ -57,5 +67,16 @@ namespace ViewModels.DataModels
         public string NotInInventorySize { get; set; }
 
         public decimal NotInInventoryPrice { get; set; }
+
+        protected void OnPropertyChanged(string name)
+        {
+            PropertyChangedEventHandler handler = PropertyChanged;
+            if (handler != null)
+            {
+                handler(this, new PropertyChangedEventArgs(name));
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
     }
 }
