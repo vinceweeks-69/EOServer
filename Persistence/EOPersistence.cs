@@ -3378,8 +3378,8 @@ namespace EO.Persistence
                         {
                             update.Add(new NotInInventory()
                             {
-                                WorkOrderId = d.WorkOrderId,
-                                ArrangementId = d.ArrangementId,
+                                WorkOrderId = updatedWorkOrderId,
+                                ArrangementId = 0,
                                 NotInInventoryName = d.NotInInventoryName,
                                 NotInInventoryPrice = d.NotInInventoryPrice,
                                 NotInInventoryQuantity = d.NotInInventoryQuantity,
@@ -3415,7 +3415,7 @@ namespace EO.Persistence
                         foreach (AddArrangementRequest aaRequest in request.Arrangements)
                         {
                             long newOrUpdatedId = 0;
-                            if (aaRequest.Arrangement.ArrangementId == 0)
+                            if (aaRequest.Arrangement.ArrangementId <= 0)
                             {
                                 newOrUpdatedId = AddArrangement(aaRequest);
 
@@ -3474,7 +3474,7 @@ namespace EO.Persistence
             }
             catch (Exception ex)
             {
-
+                updatedWorkOrderId = 0;
             }
             return updatedWorkOrderId;
         }
@@ -3607,6 +3607,24 @@ namespace EO.Persistence
                         List<long> x = dbContext.Person.Where(a => a.Email.Contains(request.Email)).Select(b => b.PersonId).ToList();
 
                         personIds = personIds.Union(x).ToList();
+                    }
+
+                    if (!String.IsNullOrEmpty(request.Address))
+                    {
+                        List<long> adxIds = dbContext.Address.Where(a => a.StreetAddress.Contains(request.Address)).Select(b => b.AddressId).ToList();
+
+                        List<long> pIds = dbContext.PersonAddressMap.Where(a => adxIds.Contains(a.AddresId)).Select(b => b.PersonId).ToList();
+
+                        personIds = personIds.Union(pIds).ToList();
+                    }
+
+                    if (!String.IsNullOrEmpty(request.ZipCode))
+                    {
+                        List<long> adxIds = dbContext.Address.Where(a => a.Zipcode.Contains(request.ZipCode)).Select(b => b.AddressId).ToList();
+
+                        List<long> pIds = dbContext.PersonAddressMap.Where(a => adxIds.Contains(a.AddresId)).Select(b => b.PersonId).ToList();
+
+                        personIds = personIds.Union(pIds).ToList();
                     }
                 }
             }

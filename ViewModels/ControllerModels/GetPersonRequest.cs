@@ -18,13 +18,16 @@ namespace ViewModels.ControllerModels
         public string PhonePrimary { get; set; }
         public string PhoneAlt { get; set; }
         public string Email { get; set; }
+        public string Address { get; set; }
+        public string ZipCode { get; set; }
 
         public bool IsEmpty()
         {
             bool isEmpty = true;
 
-            if(PersonId != 0 || !String.IsNullOrEmpty(FirstName) || !String.IsNullOrEmpty(LastName) ||
-                !String.IsNullOrEmpty(PhonePrimary) || !String.IsNullOrEmpty(PhoneAlt) || !String.IsNullOrEmpty(Email))
+            if (PersonId != 0 || !String.IsNullOrEmpty(FirstName) || !String.IsNullOrEmpty(LastName) ||
+                !String.IsNullOrEmpty(PhonePrimary) || !String.IsNullOrEmpty(PhoneAlt) || !String.IsNullOrEmpty(Email) ||
+                !String.IsNullOrEmpty(Address) || !String.IsNullOrEmpty(ZipCode))
             {
                 isEmpty = false;
             }
